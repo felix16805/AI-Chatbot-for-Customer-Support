@@ -1,0 +1,212 @@
+// Prisma Schema for AI Chatbot with Software Engineering Best Practices
+// Models include: Authentication, Chat History, Logging, and Audit Trails
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================================================
+// USER & AUTHENTICATION MODELS (NextAuth.js v5 compatible)
+// ============================================================================
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?   // Hashed password for credentials provider
+  
+  // Relations
+  accounts      Account[]
+  sessions      Session[]
+  chatSessions  ChatSession[]
+  auditLogs     AuditLog[]
+  
+  // Metadata
+  createdAt     DateTime  @default(now()) @db.Timestamptz()
+  updatedAt     DateTime  @updatedAt @db.Timestamptz()
+
+  @@index([email])
+  @@index([createdAt])
+}
+
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?  @db.Text
+  access_token       String?  @db.Text
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?  @db.Text
+  session_state      String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  sessionToken String? @unique
+  userId    String
+  expires   DateTime @db.Timestamptz()
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expires])
+}
+
+model VerificationToken {
+  email      String
+  token      String   @unique
+  expires    DateTime @db.Timestamptz()
+
+  @@unique([email, token])
+  @@index([email])
+}
+
+// ============================================================================
+// CHAT & MESSAGING MODELS
+// ============================================================================
+
+model ChatSession {
+  id           String   @id @default(cuid())
+  userId       String
+  title        String?  @default("New Chat")
+  
+  // Messages in this session
+  messages     Message[]
+  
+  // Metadata for tracking
+  isArchived   Boolean  @default(false)
+  createdAt    DateTime @default(now()) @db.Timestamptz()
+  updatedAt    DateTime @updatedAt @db.Timestamptz()
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([createdAt])
+  @@index([isArchived])
+}
+
+model Message {
+  id             String   @id @default(cuid())
+  chatSessionId  String
+  content        String   @db.Text
+  role           String   // "user" or "assistant"
+  
+  // AI Response tracking
+  modelUsed      String?  // e.g., "gemini-2.5-flash"
+  responseTime   Int?     // milliseconds
+  tokensUsed     Int?
+  
+  // Error/Retry tracking
+  error          String?  @db.Text
+  retryCount     Int      @default(0)
+  
+  // Metadata
+  createdAt      DateTime @default(now()) @db.Timestamptz()
+  updatedAt      DateTime @updatedAt @db.Timestamptz()
+  
+  chatSession ChatSession @relation(fields: [chatSessionId], references: [id], onDelete: Cascade)
+
+  @@index([chatSessionId])
+  @@index([role])
+  @@index([createdAt])
+}
+
+// ============================================================================
+// LOGGING & MONITORING MODELS (Demonstrates SE Best Practices)
+// ============================================================================
+
+model ErrorLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  
+  // Error details
+  message   String   @db.Text
+  stack     String?  @db.Text
+  code      String?
+  context   String?  @db.Text // JSON stringify of additional context
+  
+  // Request tracking
+  method    String?  // HTTP method
+  path      String?  // API endpoint
+  statusCode Int?
+  
+  // Environment
+  environment String? @default("development")
+  severity  String   @default("error") // "error", "warn", "info"
+  
+  // Metadata
+  createdAt DateTime @default(now()) @db.Timestamptz()
+
+  @@index([userId])
+  @@index([severity])
+  @@index([createdAt])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String   // e.g., "LOGIN", "CREATE_CHAT", "DELETE_MESSAGE"
+  resource  String?  // e.g., "ChatSession", "User"
+  resourceId String?
+  
+  // Change tracking
+  changes   String?  @db.Text // JSON stringify of before/after values
+  details   String?  @db.Text // Additional context
+  
+  // IP & User Agent for security
+  ipAddress String?
+  userAgent String?  @db.Text
+  
+  // Metadata
+  status    String   @default("success") // "success", "failed"
+  createdAt DateTime @default(now()) @db.Timestamptz()
+  
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+  @@index([resource])
+}
+
+// ============================================================================
+// PERFORMANCE & MONITORING
+// ============================================================================
+
+model ApiMetric {
+  id        String   @id @default(cuid())
+  endpoint  String
+  method    String
+  
+  // Performance metrics
+  statusCode Int
+  responseTime Int  // milliseconds
+  requestSize Int?  // bytes
+  responseSize Int? // bytes
+  
+  // Caching
+  cacheHit  Boolean  @default(false)
+  
+  // Metadata
+  createdAt DateTime @default(now()) @db.Timestamptz()
+
+  @@index([endpoint])
+  @@index([createdAt])
+}
+
