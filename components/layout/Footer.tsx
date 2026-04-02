@@ -22,7 +22,7 @@ export default function Footer() {
 
           {/* Links */}
           {[
-            { title: "Product", links: [{ label: "Features", href: "/features" }, { label: "Live Demo", href: "/chat" }, { label: "Pricing", href: "#" }, { label: "Changelog", href: "#" }] },
+            { title: "Product", links: [{ label: "Features", href: "/features" }, { label: "Live Demo", href: "/chat" }, { label: "Pricing", href: "/pricing" }, { label: "Changelog", href: "#" }] },
             { title: "Resources", links: [{ label: "Documentation", href: "#" }, { label: "API Reference", href: "#" }, { label: "Blog", href: "#" }, { label: "Status", href: "#" }] },
             { title: "Company", links: [{ label: "About", href: "#" }, { label: "Careers", href: "#" }, { label: "Privacy", href: "#" }, { label: "Terms", href: "#" }] },
           ].map((col) => (

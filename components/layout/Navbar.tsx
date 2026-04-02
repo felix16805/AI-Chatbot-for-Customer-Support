@@ -8,7 +8,16 @@ import { LogOut, User } from "lucide-react";
 
 const navLinks = [
   { href: "/", label: "Home" },
-  { href: "/features", label: "Features" },
+  { 
+    href: "/product",
+    label: "Product", 
+    submenu: [
+      { href: "/features", label: "Features" },
+      { href: "/chat", label: "Live Demo" },
+      { href: "/pricing", label: "Pricing" },
+      { href: "/changelog", label: "Changelog" },
+    ]
+  },
 ];
 
 export default function Navbar() {
@@ -16,6 +25,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const { isAuthenticated, user, logout, isLoading } = useAuth();
   const [showDropdown, setShowDropdown] = useState(false);
+  const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -110,110 +120,179 @@ export default function Navbar() {
         position: "relative",
         zIndex: 1,
       }}>
-        {navLinks.map(({ href, label }) => {
-          const isActive = pathname === href;
+        {navLinks.map((link: any) => {
+          const hasSubmenu = link.submenu;
+          const isActive = pathname === link.href;
+          const isSubmenuActive = hasSubmenu && link.submenu.some((sub: any) => pathname === sub.href);
+          const isOpen = openSubmenu === link.label;
+          
           return (
-            <li key={href}>
-              <Link
-                href={href}
-                style={{
-                  color: isActive ? "#fff" : "rgba(255,255,255,0.65)",
-                  textDecoration: "none",
-                  fontSize: "0.95rem",
-                  fontWeight: 600,
-                  transition: "all 0.35s cubic-bezier(0.16,1,0.3,1)",
-                  position: "relative",
-                  display: "inline-block",
-                  padding: "6px 10px",
-                  borderRadius: "8px",
-                  background: isActive ? "rgba(255,255,255,0.12)" : "transparent",
-                  backdropFilter: isActive ? "blur(10px)" : "none",
-                  border: isActive ? "1px solid rgba(255,255,255,0.2)" : "1px solid transparent",
-                }}
-                onMouseEnter={(e) => {
-                  if (!isActive) {
-                    (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.95)";
-                    (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.08)";
-                    (e.currentTarget as HTMLElement).style.border = "1px solid rgba(255,255,255,0.15)";
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!isActive) {
-                    (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.65)";
-                    (e.currentTarget as HTMLElement).style.background = "transparent";
-                    (e.currentTarget as HTMLElement).style.border = "1px solid transparent";
-                  }
-                }}
-              >
-                {label}
-                {isActive && (
-                  <span
+            <li 
+              key={link.label}
+              style={{ position: "relative" }}
+            >
+              {hasSubmenu ? (
+                <div>
+                  <button
+                    onClick={() => setOpenSubmenu(isOpen ? null : link.label)}
                     style={{
-                      position: "absolute",
-                      bottom: -8,
-                      left: 0,
-                      right: 0,
-                      height: "3px",
-                      background: "linear-gradient(90deg, var(--coral), var(--amber))",
-                      borderRadius: "2px",
-                      animation: "slideInUp 0.4s cubic-bezier(0.16,1,0.3,1)",
+                      color: isSubmenuActive || isOpen ? "#fff" : "rgba(255,255,255,0.65)",
+                      textDecoration: "none",
+                      fontSize: "0.95rem",
+                      fontWeight: 600,
+                      transition: "all 0.35s cubic-bezier(0.16,1,0.3,1)",
+                      position: "relative",
+                      display: "inline-block",
+                      padding: "6px 10px",
+                      borderRadius: "8px",
+                      background: isSubmenuActive || isOpen ? "rgba(255,255,255,0.12)" : "transparent",
+                      backdropFilter: isSubmenuActive || isOpen ? "blur(10px)" : "none",
+                      border: isSubmenuActive || isOpen ? "1px solid rgba(255,255,255,0.2)" : "1px solid transparent",
+                      cursor: "pointer",
                     }}
-                  />
-                )}
-              </Link>
+                    onMouseEnter={(e) => {
+                      if (!isSubmenuActive && !isOpen) {
+                        (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.95)";
+                        (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.08)";
+                        (e.currentTarget as HTMLElement).style.border = "1px solid rgba(255,255,255,0.15)";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isSubmenuActive && !isOpen) {
+                        (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.65)";
+                        (e.currentTarget as HTMLElement).style.background = "transparent";
+                        (e.currentTarget as HTMLElement).style.border = "1px solid transparent";
+                      }
+                    }}
+                  >
+                    {link.label}
+                    {isSubmenuActive && (
+                      <span
+                        style={{
+                          position: "absolute",
+                          bottom: -8,
+                          left: 0,
+                          right: 0,
+                          height: "3px",
+                          background: "linear-gradient(90deg, var(--coral), var(--amber))",
+                          borderRadius: "2px",
+                          animation: "slideInUp 0.4s cubic-bezier(0.16,1,0.3,1)",
+                        }}
+                      />
+                    )}
+                  </button>
+                  
+                  {/* Submenu Dropdown - Click based */}
+                  {isOpen && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: "calc(100% + 12px)",
+                        left: 0,
+                        background: "linear-gradient(135deg, rgba(26,26,46,0.98), rgba(26,26,46,0.92))",
+                        border: "1px solid rgba(78,205,196,0.25)",
+                        borderRadius: "14px",
+                        overflow: "hidden",
+                        minWidth: "200px",
+                        boxShadow: "0 0 30px rgba(78,205,196,0.15), 0 20px 50px rgba(0,0,0,0.5)",
+                        backdropFilter: "blur(20px)",
+                        animation: "slideInUp 0.3s cubic-bezier(0.16,1,0.3,1)",
+                        zIndex: 10,
+                      }}
+                    >
+                      {link.submenu.map((sublink: any, idx: number) => {
+                        const isSubActive = pathname === sublink.href;
+                        return (
+                          <Link
+                            key={idx}
+                            href={sublink.href}
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              padding: "13px 18px",
+                              color: isSubActive ? "var(--mint)" : "rgba(255,255,255,0.72)",
+                              textDecoration: "none",
+                              fontSize: "0.9rem",
+                              fontWeight: isSubActive ? 700 : 500,
+                              transition: "all 0.25s cubic-bezier(0.16,1,0.3,1)",
+                              background: isSubActive ? "rgba(78,205,196,0.15)" : "transparent",
+                              position: "relative",
+                              borderBottom: idx < link.submenu.length - 1 ? "1px solid rgba(255,255,255,0.06)" : "none",
+                            }}
+                            onClick={() => setOpenSubmenu(null)}
+                            onMouseEnter={(e) => {
+                              if (!isSubActive) {
+                                (e.currentTarget as HTMLElement).style.background = "rgba(78,205,196,0.12)";
+                                (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.95)";
+                              }
+                            }}
+                            onMouseLeave={(e) => {
+                              if (!isSubActive) {
+                                (e.currentTarget as HTMLElement).style.background = "transparent";
+                                (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.72)";
+                              }
+                            }}
+                          >
+                            <span style={{ marginRight: 8, opacity: 0.7 }}>•</span>
+                            {sublink.label}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <Link
+                  href={link.href}
+                  style={{
+                    color: isActive ? "#fff" : "rgba(255,255,255,0.65)",
+                    textDecoration: "none",
+                    fontSize: "0.95rem",
+                    fontWeight: 600,
+                    transition: "all 0.35s cubic-bezier(0.16,1,0.3,1)",
+                    position: "relative",
+                    display: "inline-block",
+                    padding: "6px 10px",
+                    borderRadius: "8px",
+                    background: isActive ? "rgba(255,255,255,0.12)" : "transparent",
+                    backdropFilter: isActive ? "blur(10px)" : "none",
+                    border: isActive ? "1px solid rgba(255,255,255,0.2)" : "1px solid transparent",
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isActive) {
+                      (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.95)";
+                      (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.08)";
+                      (e.currentTarget as HTMLElement).style.border = "1px solid rgba(255,255,255,0.15)";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive) {
+                      (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.65)";
+                      (e.currentTarget as HTMLElement).style.background = "transparent";
+                      (e.currentTarget as HTMLElement).style.border = "1px solid transparent";
+                    }
+                  }}
+                >
+                  {link.label}
+                  {isActive && (
+                    <span
+                      style={{
+                        position: "absolute",
+                        bottom: -8,
+                        left: 0,
+                        right: 0,
+                        height: "3px",
+                        background: "linear-gradient(90deg, var(--coral), var(--amber))",
+                        borderRadius: "2px",
+                        animation: "slideInUp 0.4s cubic-bezier(0.16,1,0.3,1)",
+                      }}
+                    />
+                  )}
+                </Link>
+              )}
             </li>
           );
         })}
-        {/* Dynamic Chat Link */}
-        <li>
-          <Link
-            href={isAuthenticated ? "/chat" : "/chat/demo"}
-            style={{
-              color: (pathname === "/chat" || pathname === "/chat/demo") ? "#fff" : "rgba(255,255,255,0.65)",
-              textDecoration: "none",
-              fontSize: "0.95rem",
-              fontWeight: 600,
-              transition: "all 0.35s cubic-bezier(0.16,1,0.3,1)",
-              position: "relative",
-              display: "inline-block",
-              padding: "6px 10px",
-              borderRadius: "8px",
-              background: (pathname === "/chat" || pathname === "/chat/demo") ? "rgba(255,255,255,0.12)" : "transparent",
-              backdropFilter: (pathname === "/chat" || pathname === "/chat/demo") ? "blur(10px)" : "none",
-              border: (pathname === "/chat" || pathname === "/chat/demo") ? "1px solid rgba(255,255,255,0.2)" : "1px solid transparent",
-            }}
-            onMouseEnter={(e) => {
-              if (pathname !== "/chat" && pathname !== "/chat/demo") {
-                (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.95)";
-                (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.08)";
-                (e.currentTarget as HTMLElement).style.border = "1px solid rgba(255,255,255,0.15)";
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (pathname !== "/chat" && pathname !== "/chat/demo") {
-                (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.65)";
-                (e.currentTarget as HTMLElement).style.background = "transparent";
-                (e.currentTarget as HTMLElement).style.border = "1px solid transparent";
-              }
-            }}
-          >
-            {isAuthenticated ? "Live Chat" : "Try Demo"}
-            {(pathname === "/chat" || pathname === "/chat/demo") && (
-              <span
-                style={{
-                  position: "absolute",
-                  bottom: -8,
-                  left: 0,
-                  right: 0,
-                  height: "3px",
-                  background: "linear-gradient(90deg, var(--coral), var(--amber))",
-                  borderRadius: "2px",
-                  animation: "slideInUp 0.4s cubic-bezier(0.16,1,0.3,1)",
-                }}
-              />
-            )}
-          </Link>
-        </li>
       </ul>
 
       {/* Actions */}
