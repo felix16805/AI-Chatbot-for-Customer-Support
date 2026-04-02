@@ -1,0 +1,55 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Version control
+.github
+.gitlab-ci.yml
+.travis.yml
+
+# Dev files
+.env.local
+.env.example
+.DS_Store
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.editorconfig
+
+# Dependencies cache
+node_modules
+npm-debug.log
+yarn-error.log
+pnpm-debug.log
+
+# Build outputs
+.next
+out
+dist
+build
+
+# Testing
+coverage
+.nyc_output
+jest.config.ts
+jest.setup.ts
+lib/__tests__
+lib/__mocks__
+
+# CI/CD
+.github/workflows
+
+# Documentation
+README.md
+*.md
+docs
+
+# OS
+Thumbs.db
+*.bak
+
+# Source maps (optional)
+*.map
