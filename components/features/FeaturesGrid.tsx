@@ -52,7 +52,8 @@ const features = [
 export default function FeaturesGrid() {
   return (
     <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 56px 80px", display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
-      {features.map((f, i) => (
+      {/* eslint-disable-next-line @typescript-eslint/no-unused-vars */}
+      {features.map((f, _i) => (
         <div
           key={f.title}
           style={{

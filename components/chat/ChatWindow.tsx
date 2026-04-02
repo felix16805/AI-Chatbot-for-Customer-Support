@@ -54,7 +54,10 @@ export default function ChatWindow() {
         content: data.message,
         intent: data.intent
       }]);
-    } catch (error) {
+    } catch (
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      _error
+    ) {
       setMessages(prev => [...prev, { 
         id: Date.now() + 1, 
         role: "assistant", 

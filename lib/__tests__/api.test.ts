@@ -6,15 +6,12 @@
 import { 
   validateInput,
   SendMessageSchema,
-  LoginSchema,
-  SignupSchema
+  LoginSchema
 } from '@/lib/validation';
 import { 
   AuthenticationError, 
   ValidationError, 
-  AuthorizationError,
-  errorResponse,
-  successResponse
+  AuthorizationError
 } from '@/lib/errors';
 
 // Mock next/headers
@@ -51,7 +48,7 @@ jest.mock('@/lib/prisma', () => ({
 describe('API - Validation & Error Handling', () => {
   describe('Input Validation', () => {
     it('should reject empty message', () => {
-      const [isValid, data, errors] = validateInput(
+      const [isValid, , errors] = validateInput(
         SendMessageSchema,
         { content: '', chatSessionId: 'clxyz1234567890abcdefgh' }
       );
@@ -61,7 +58,8 @@ describe('API - Validation & Error Handling', () => {
 
     it('should reject message exceeding max length', () => {
       const longMessage = 'a'.repeat(5001);
-      const [isValid, data, errors] = validateInput(
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const [isValid, _data, _errors] = validateInput(
         SendMessageSchema,
         { content: longMessage, chatSessionId: 'clxyz1234567890abcdefgh' }
       );
@@ -69,7 +67,7 @@ describe('API - Validation & Error Handling', () => {
     });
 
     it('should accept valid message', () => {
-      const [isValid, data, errors] = validateInput(
+      const [isValid, data] = validateInput(
         SendMessageSchema,
         { content: 'Hello, how can I help?', chatSessionId: 'clxyz1234567890abcdefgh' }
       );
@@ -78,7 +76,8 @@ describe('API - Validation & Error Handling', () => {
     });
 
     it('should validate login credentials', () => {
-      const [isValid, data, errors] = validateInput(
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const [isValid, _data, _errors] = validateInput(
         LoginSchema,
         { email: 'user@example.com', password: 'Password123' }
       );
@@ -128,7 +127,8 @@ describe('API - Validation & Error Handling', () => {
     });
 
     it('should validate JWT token format', () => {
-      const invalidToken = 'not-a-jwt';
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const _invalidToken = 'not-a-jwt';
       const error = new AuthenticationError(
         'Invalid token format'
       );
@@ -232,10 +232,10 @@ describe('API - Endpoint Response Formats', () => {
 describe('API - Security', () => {
   describe('SQL Injection Prevention', () => {
     it('should sanitize user input with Zod validation', () => {
-      const maliciousInput = "'; DROP TABLE users; --";
+      const _maliciousInput = "'; DROP TABLE users; --";
       const [isValid] = validateInput(
         SendMessageSchema,
-        { content: maliciousInput, chatSessionId: 'clxyz1234567890abcdefgh' }
+        { content: _maliciousInput, chatSessionId: 'clxyz1234567890abcdefgh' }
       );
       // Should pass through as-is (text validation only)
       // Prisma handles parameterized queries to prevent SQL injection

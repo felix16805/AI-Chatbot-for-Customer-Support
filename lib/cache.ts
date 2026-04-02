@@ -184,7 +184,10 @@ export async function exists(key: string): Promise<boolean> {
     const redis = await getRedis();
     const exists = await redis.exists(key);
     return exists === 1;
-  } catch (error) {
+  } catch (
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _error
+  ) {
     return false;
   }
 }

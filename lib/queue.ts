@@ -69,7 +69,7 @@ export const chatProcessingQueue = new Queue('chat-processing', {
  * Email Queue Processing
  */
 emailQueue.process(async (job) => {
-  const { to, subject, template, data } = job.data as EmailJobData;
+  const { to, template } = job.data as EmailJobData;
   
   try {
     // Log the email job
@@ -91,10 +91,10 @@ emailQueue.process(async (job) => {
   }
 });
 
-emailQueue.on('completed', (job) => {
+emailQueue.on('completed', (_job) => {
   logger.info({
     type: 'email_completed',
-    jobId: job.id
+    jobId: _job.id
   });
 });
 
@@ -110,7 +110,7 @@ emailQueue.on('failed', (job, err) => {
  * Notification Queue Processing
  */
 notificationQueue.process(async (job) => {
-  const { userId, type, title, content } = job.data as NotificationJobData;
+  const { userId, type } = job.data as NotificationJobData;
   
   try {
     logger.info({
@@ -130,10 +130,10 @@ notificationQueue.process(async (job) => {
   }
 });
 
-notificationQueue.on('completed', (job) => {
+notificationQueue.on('completed', (_job) => {
   logger.info({
     type: 'notification_completed',
-    jobId: job.id
+    jobId: _job.id
   });
 });
 
@@ -141,7 +141,7 @@ notificationQueue.on('completed', (job) => {
  * Chat Processing Queue Processing
  */
 chatProcessingQueue.process(async (job) => {
-  const { sessionId, messageId, content, userId } = job.data as ChatProcessingJobData;
+  const { sessionId, messageId, userId } = job.data as ChatProcessingJobData;
   
   try {
     job.progress(25);

@@ -262,7 +262,10 @@ export async function consumeNotifications(
       if (msg) {
         ch.ack(msg);
       }
-    } catch (error) {
+    } catch (
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      _error
+    ) {
       if (msg && !msg.fields.redelivered) {
         ch.nack(msg, false, true);
       } else if (msg) {
@@ -286,7 +289,10 @@ export async function consumeChatProcessing(
       if (msg) {
         ch.ack(msg);
       }
-    } catch (error) {
+    } catch (
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      _error
+    ) {
       logger.error({
         type: 'chat_handler_error'
       });
@@ -314,7 +320,10 @@ export async function consumeChatResponses(
       if (msg) {
         ch.ack(msg);
       }
-    } catch (error) {
+    } catch (
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      _error
+    ) {
       if (msg) {
         ch.nack(msg, false, false);
       }

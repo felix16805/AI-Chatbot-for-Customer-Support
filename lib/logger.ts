@@ -128,7 +128,8 @@ export function logDatabaseOperation(options: {
   duration: number;
   error?: Error;
 }) {
-  const { operation, table, duration, error } = options;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { operation, table, duration, _error } = options;
 
   logger.info(
     {
@@ -162,7 +163,6 @@ export async function logModelUsage(options: {
     outputTokens,
     responseTime,
     success,
-    error,
   } = options;
 
   logger.info(
