@@ -4,7 +4,7 @@
  * Best Practice: Cache invalidation strategies, TTL management, fallback handling
  */
 
-import Redis, { createClient } from 'redis';
+import { createClient } from "redis";
 import { logger } from './logger';
 
 type RedisClientType = ReturnType<typeof createClient>;

@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, CheckCircle, Zap, Users, BarChart3, Lock, Clock, Smartphone } from "lucide-react";
+import { ArrowRight, CheckCircle, Zap, Users, BarChart3, Lock, Smartphone } from "lucide-react";
 import Link from "next/link";
 
 export default function FeaturesPage() {

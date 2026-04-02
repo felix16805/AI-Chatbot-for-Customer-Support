@@ -1,10 +1,12 @@
 import "dotenv/config";
 
-export default {
+const prismaConfig = {
   schema: "./prisma/schema.prisma",
   migrations: {
     path: "./prisma/migrations",
   },
 };
+
+export default prismaConfig;
 
 

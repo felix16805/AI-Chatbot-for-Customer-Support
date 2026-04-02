@@ -39,15 +39,15 @@ const authConfig: NextAuthOptions = {
 
   // JWT callback with custom claims
   callbacks: {
-    async jwt({ token, user }: any) {
+    async jwt({ token, user }: { token: Record<string, unknown>; user: Record<string, unknown> | undefined }) {
       if (user) {
-        token.id = user.id;
+        token.id = (user as Record<string, unknown>).id;
       }
       return token;
     },
-    async session({ session, token }: any) {
+    async session({ session, token }: { session: Record<string, unknown>; token: Record<string, unknown> }) {
       if (session.user && token.id) {
-        session.user.id = token.id as string;
+        (session.user as Record<string, unknown>).id = token.id as string;
       }
       return session;
     },
@@ -108,7 +108,7 @@ const authConfig: NextAuthOptions = {
     async signIn(message: { user?: { email?: string | null } }) {
       console.log(`[AUTH] User signed in: ${message.user?.email ?? "unknown"}`);
     },
-    async signOut(_message: unknown) {
+    async signOut() {
       console.log(`[AUTH] User signed out`);
     },
   },

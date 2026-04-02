@@ -1,17 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { useRouter } from "next/navigation";
 import ChatPage from "@/components/chat/ChatPage";
 import DemoChatPage from "@/components/chat/DemoChatPage";
 
 export default function ChatRoute() {
   const { isAuthenticated, isLoading } = useAuth();
-  const router = useRouter();
-
-  // Show demo to everyone, authenticated users get full interface
-  const showDemo = !isAuthenticated && !isLoading;
 
   if (isLoading) {
     return (
