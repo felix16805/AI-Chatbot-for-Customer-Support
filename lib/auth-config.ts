@@ -1,7 +1,7 @@
 // NextAuth Configuration - Production-Grade Authentication
 // Demonstrates SE Best Practices: Security, Session Management, Multiple Providers
 
-import NextAuth, { type DefaultSession, type NextAuthOptions, type JWT } from "next-auth";
+import NextAuth, { type DefaultSession, type NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "./prisma";
@@ -39,15 +39,15 @@ const authConfig: NextAuthOptions = {
 
   // JWT callback with custom claims
   callbacks: {
-    async jwt({ token, user }: { token: JWT; user?: { id: string; email?: string | null; name?: string | null; image?: string | null } | null }) {
+    async jwt({ token, user }: { token: Record<string, unknown>; user?: { id: string; email?: string | null; name?: string | null; image?: string | null } | null }) {
       if (user) {
         token.id = user.id;
       }
       return token;
     },
-    async session({ session, token }: { session: { user?: DefaultSession["user"] }; token: JWT }) {
+    async session({ session, token }: { session: { user?: Partial<typeof DefaultSession["user"]> }; token: Record<string, unknown> }) {
       if (session.user && token.id) {
-        (session.user as any).id = token.id;
+        (session.user as any).id = token.id as string;
       }
       return session;
     },
