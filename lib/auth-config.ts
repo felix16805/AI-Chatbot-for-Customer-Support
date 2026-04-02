@@ -100,7 +100,6 @@ const authConfig: NextAuthOptions = {
   // Pages for custom auth UI
   pages: {
     signIn: "/login",
-    signUp: "/signup",
     error: "/auth/error",
   },
 
