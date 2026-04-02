@@ -2,7 +2,7 @@
 // Best Practice: Prevents multiple database connections in development
 // Reference: https://www.prisma.io/docs/guides/other/troubleshooting-orm/help-articles/nextjs-prisma-client-instantiation-issue
 
-import { PrismaClient } from "./generated/prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 
