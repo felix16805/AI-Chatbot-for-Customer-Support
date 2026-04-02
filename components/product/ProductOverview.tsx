@@ -6,7 +6,6 @@ import Link from "next/link";
 export default function ProductOverview() {
   return (
     <div style={{ width: "100%" }}>
-    <div style={{ width: "100%" }}>
       {/* Hero Section */}
       <section style={{ maxWidth: 1200, margin: "0 auto", padding: "100px 56px 80px" }}>
         {/* Header */}
