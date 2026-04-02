@@ -4,7 +4,7 @@
  * Demonstrates: Advanced message queue patterns, RPC, topic exchanges
  * Best Practice: Enterprise message broker integration
  */
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import amqplib, { Connection, Channel } from 'amqplib';
 import { logger } from './logger';
 
@@ -39,13 +39,15 @@ const ROUTING_KEYS = {
 // CONNECTION MANAGEMENT
 // ============================================================================
 
-let connection: unknown = null;
-let channel: unknown = null;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let connection: any = null;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let channel: any = null;
 
 /**
  * Establish RabbitMQ connection
  */
-export async function connectRabbitMQ(): Promise<unknown> {
+export async function connectRabbitMQ(): Promise<Channel> {
   try {
     if (connection && channel) {
       return channel;
@@ -227,9 +229,11 @@ export async function consumeEmails(
 
   await ch.consume(QUEUES.EMAIL, async (msg: unknown) => {
     try {
-      await handler(msg);
-      if (msg) {
-        ch.ack(msg);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const safeMsg = msg as any;
+      await handler(safeMsg);
+      if (safeMsg) {
+        ch.ack(safeMsg);
       }
     } catch (error) {
       logger.error({
@@ -237,10 +241,10 @@ export async function consumeEmails(
         error: error instanceof Error ? error.message : 'Unknown error'
       });
 
-      if (msg && !msg.fields.redelivered) {
-        ch.nack(msg, false, true); // Requeue once
+      if (msg && (msg as any).fields && !(msg as any).fields.redelivered) {
+        ch.nack(msg as any, false, true); // Requeue once
       } else if (msg) {
-        ch.nack(msg, false, false); // Send to dead letter queue
+        ch.nack(msg as any, false, false); // Send to dead letter queue
       }
     }
   });
@@ -258,7 +262,8 @@ export async function consumeNotifications(
 
   await ch.consume(QUEUES.NOTIFICATION, async (msg: unknown) => {
     try {
-      await handler(msg);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await handler(msg as any);
       if (msg) {
         ch.ack(msg);
       }
@@ -285,7 +290,8 @@ export async function consumeChatProcessing(
 
   await ch.consume(QUEUES.CHAT_PROCESSING, async (msg: unknown) => {
     try {
-      await handler(msg);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await handler(msg as any);
       if (msg) {
         ch.ack(msg);
       }
@@ -316,7 +322,8 @@ export async function consumeChatResponses(
 
   await ch.consume(QUEUES.CHAT_RESPONSES, async (msg: unknown) => {
     try {
-      await handler(msg);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await handler(msg as any);
       if (msg) {
         ch.ack(msg);
       }

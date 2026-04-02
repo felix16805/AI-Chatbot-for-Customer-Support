@@ -129,7 +129,7 @@ export function logDatabaseOperation(options: {
   error?: Error;
 }) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { operation, table, duration, _error } = options;
+  const { operation, table, duration, error: _error } = options;
 
   logger.info(
     {

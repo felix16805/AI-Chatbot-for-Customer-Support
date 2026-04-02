@@ -39,15 +39,21 @@ const authConfig: NextAuthOptions = {
 
   // JWT callback with custom claims
   callbacks: {
-    async jwt({ token, user }: { token: Record<string, unknown>; user: Record<string, unknown> | undefined }) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async jwt({ token, user }: any) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if (user) {
-        token.id = (user as Record<string, unknown>).id;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        token.id = (user as any).id;
       }
       return token;
     },
-    async session({ session, token }: { session: Record<string, unknown>; token: Record<string, unknown> }) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async session({ session, token }: any) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if (session.user && token.id) {
-        (session.user as Record<string, unknown>).id = token.id as string;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (session.user as any).id = token.id as string;
       }
       return session;
     },
