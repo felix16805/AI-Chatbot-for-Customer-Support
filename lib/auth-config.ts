@@ -1,12 +1,21 @@
 // NextAuth Configuration - Production-Grade Authentication
 // Demonstrates SE Best Practices: Security, Session Management, Multiple Providers
 
-import NextAuth, { type Session } from "next-auth";
+import NextAuth, { type DefaultSession, type NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "./prisma";
 import { compare } from "bcryptjs";
 import { z } from "zod";
+
+// Extend NextAuth session to include user id
+declare module "next-auth" {
+  interface Session {
+    user: DefaultSession["user"] & {
+      id: string;
+    };
+  }
+}
 
 // Input validation for credentials
 const SignInSchema = z.object({
@@ -17,7 +26,7 @@ const SignInSchema = z.object({
 });
 
 // Configure NextAuth
-const authConfig = {
+const authConfig: NextAuthOptions = {
   // Configure Prisma adapter for database sessions
   adapter: PrismaAdapter(prisma),
   
@@ -36,9 +45,13 @@ const authConfig = {
       }
       return token;
     },
-    async session({ session, token }: { session: Session; token: Record<string, unknown> }) {
-      if (session.user) {
-        session.user.id = token.id as string;
+    async session({ session, token }: { session: Record<string, unknown>; token: Record<string, unknown> }) {
+      const sess = session as any;
+      if (sess.user && token.id) {
+        sess.user.id = token.id as string;
+      }
+      return sess;
+    },
       }
       return session;
     },
