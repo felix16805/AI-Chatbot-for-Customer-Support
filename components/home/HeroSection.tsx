@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-const Link = require('next/link').default;
+import Link from "next/link";
 
 export default function HeroSection() {
   return (

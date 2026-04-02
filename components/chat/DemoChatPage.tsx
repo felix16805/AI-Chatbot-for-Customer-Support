@@ -472,7 +472,7 @@ export default function DemoChat() {
                 backdropFilter: "blur(10px)",
               }}>
                 <h3 style={{ color: "white", fontSize: "1.1rem", fontWeight: 700, margin: "0 0 12px 0" }}>Demo Limit Reached</h3>
-                <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.95rem", margin: "0 0 20px 0", lineHeight: 1.6 }}>You've reached your 2-message demo limit. Sign up for unlimited conversations with Aria!</p>
+                <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.95rem", margin: "0 0 20px 0", lineHeight: 1.6 }}>{"You've reached your 2-message demo limit. Sign up for unlimited conversations with Aria!"}</p>
                 <Link href="/signup" style={{ textDecoration: "none" }}>
                   <button style={{
                     display: "inline-flex",
@@ -578,7 +578,7 @@ export default function DemoChat() {
           </div>
           <p style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.35)", marginTop: 12, display: "flex", alignItems: "center", gap: 6 }}>
             <Sparkles size={14} />
-            Try asking: "Where is my order?" or "How do I reset my password?"
+            Try asking: &quot;Where is my order?&quot; or &quot;How do I reset my password?&quot;
           </p>
         </div>
       </div>

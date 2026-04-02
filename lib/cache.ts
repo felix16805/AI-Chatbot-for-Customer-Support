@@ -109,7 +109,7 @@ export async function get<T>(key: string): Promise<T | null> {
     try {
       return JSON.parse(value) as T;
     } catch {
-      return value as any;
+      return value as unknown as T;
     }
   } catch (error) {
     logger.error({

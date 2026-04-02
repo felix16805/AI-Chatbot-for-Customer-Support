@@ -540,7 +540,7 @@ export default function PricingPlans() {
             Ready to Scale?
           </h2>
           <p style={{ fontSize: "1rem", color: "rgba(255,255,255,0.7)", marginBottom: 32, lineHeight: 1.6 }}>
-            Join thousands of companies transforming support with Aria's enterprise AI.
+            Join thousands of companies transforming support with Aria&apos;s enterprise AI.
           </p>
           <button
             style={{

@@ -49,10 +49,12 @@ jobs:
 
       - name: Upload build artifacts
         if: success()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build-artifacts-node${{ matrix.node-version }}
-          path: .next/
+          path: .next
+          if-no-files-found: error
+          retention-days: 7
 
       - name: Comment PR with build status
         if: github.event_name == 'pull_request' && always()

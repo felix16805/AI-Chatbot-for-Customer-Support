@@ -32,7 +32,7 @@ export default function LoginPage() {
           <LoginForm />
 
           <p style={{ marginTop: 32, textAlign: "center", color: "rgba(255,255,255,0.5)", fontSize: "0.95rem" }}>
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Link href="/signup" style={{ color: "#FFB347", textDecoration: "none", fontWeight: 600, transition: "color 0.25s" }} onMouseEnter={(e) => (e.currentTarget.style.color = "#FFC96E")} onMouseLeave={(e) => (e.currentTarget.style.color = "#FFB347")}>
               Create account
             </Link>

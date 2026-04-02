@@ -6,7 +6,18 @@ import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { LogOut, User } from "lucide-react";
 
-const navLinks = [
+type NavSubLink = {
+  href: string;
+  label: string;
+};
+
+type NavLink = {
+  href: string;
+  label: string;
+  submenu?: NavSubLink[];
+};
+
+const navLinks: NavLink[] = [
   { href: "/", label: "Home" },
   { 
     href: "/product",
@@ -139,10 +150,10 @@ export default function Navbar() {
         position: "relative",
         zIndex: 1,
       }}>
-        {navLinks.map((link: any) => {
+        {navLinks.map((link: NavLink) => {
           const hasSubmenu = link.submenu;
           const isActive = pathname === link.href;
-          const isSubmenuActive = hasSubmenu && link.submenu.some((sub: any) => pathname === sub.href);
+          const isSubmenuActive = hasSubmenu && link.submenu!.some((sub: NavSubLink) => pathname === sub.href);
           const isOpen = openSubmenu === link.label;
           
           return (
@@ -220,7 +231,7 @@ export default function Navbar() {
                         zIndex: 10,
                       }}
                     >
-                      {link.submenu.map((sublink: any, idx: number) => {
+                      {link.submenu!.map((sublink: NavSubLink, idx: number) => {
                         const isSubActive = pathname === sublink.href;
                         return (
                           <Link

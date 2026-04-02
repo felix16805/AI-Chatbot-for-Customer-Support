@@ -30,14 +30,20 @@ const authConfig = {
 
   // JWT callback with custom claims
   callbacks: {
-    async jwt({ token, user }: any) {
+    async jwt({ token, user }: { token: Record<string, unknown>; user?: { id: string } | null }) {
       if (user) {
-        token.id = user.id;
+        (token as Record<string, unknown>).id = user.id;
       }
       return token;
     },
-    async session({ session, token }: any) {
-      if (session.user) {
+    async session({
+      session,
+      token,
+    }: {
+      session: { user?: { id?: string } | null };
+      token: Record<string, unknown>;
+    }) {
+      if (session.user && token.id) {
         session.user.id = token.id as string;
       }
       return session;
@@ -52,7 +58,7 @@ const authConfig = {
         email: { label: "Email", type: "email", placeholder: "you@example.com" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials: any) {
+      async authorize(credentials: Record<string, unknown> | undefined) {
         // Validate input
         const parsedCredentials = SignInSchema.safeParse(credentials);
         if (!parsedCredentials.success) {
@@ -97,14 +103,14 @@ const authConfig = {
 
   // Events for logging and monitoring
   events: {
-    async signIn(message: any) {
-      console.log(`[AUTH] User signed in: ${message.user?.email}`);
+    async signIn(message: { user?: { email?: string | null } }) {
+      console.log(`[AUTH] User signed in: ${message.user?.email ?? "unknown"}`);
     },
-    async signOut(message: any) {
+    async signOut(_message: unknown) {
       console.log(`[AUTH] User signed out`);
     },
-    async error(message: any) {
-      console.error(`[AUTH] Error: ${message.error}`);
+    async error(message: { error?: string }) {
+      console.error(`[AUTH] Error: ${message.error ?? "unknown"}`);
     },
   },
 };

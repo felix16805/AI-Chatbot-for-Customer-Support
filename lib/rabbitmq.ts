@@ -51,8 +51,8 @@ export async function connectRabbitMQ(): Promise<Channel> {
       return channel;
     }
 
-    connection = (await amqplib.connect(RABBITMQ_URL)) as unknown as Connection;
-    channel = await (connection as any).createChannel() as Channel;
+    connection = await amqplib.connect(RABBITMQ_URL);
+    channel = await connection.createChannel();
 
     // Set QoS
     await channel.prefetch(1); // Process one message at a time
@@ -77,7 +77,7 @@ export async function connectRabbitMQ(): Promise<Channel> {
     logger.info({ type: 'rabbitmq_connected' });
 
     // Setup connection error handlers
-    (connection as any).on('error', (err: Error) => {
+    connection.on('error', (err: Error) => {
       logger.error({
         type: 'rabbitmq_error',
         error: err.message
@@ -102,7 +102,7 @@ export async function closeRabbitMQ() {
       channel = null;
     }
     if (connection) {
-      await (connection as any).close();
+      await connection.close();
       connection = null;
     }
 

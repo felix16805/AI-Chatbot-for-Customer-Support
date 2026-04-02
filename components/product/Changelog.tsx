@@ -338,7 +338,7 @@ export default function ChangelogPage() {
             marginBottom: 24,
           }}
         >
-          We're constantly innovating to make Aria even more powerful. Check back regularly for updates.
+          We&apos;re constantly innovating to make Aria even more powerful. Check back regularly for updates.
         </p>
         <a
           href="mailto:updates@aria.ai?subject=Subscribe to updates"
