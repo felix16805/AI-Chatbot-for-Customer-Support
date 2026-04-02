@@ -111,9 +111,6 @@ const authConfig: NextAuthOptions = {
     async signOut(_message: unknown) {
       console.log(`[AUTH] User signed out`);
     },
-    async error(message: { error?: string }) {
-      console.error(`[AUTH] Error: ${message.error ?? "unknown"}`);
-    },
   },
 };
 
