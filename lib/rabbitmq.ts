@@ -39,13 +39,13 @@ const ROUTING_KEYS = {
 // CONNECTION MANAGEMENT
 // ============================================================================
 
-let connection: Connection | null = null;
-let channel: Channel | null = null;
+let connection: any = null;
+let channel: any = null;
 
 /**
  * Establish RabbitMQ connection
  */
-export async function connectRabbitMQ(): Promise<Channel> {
+export async function connectRabbitMQ(): Promise<any> {
   try {
     if (connection && channel) {
       return channel;
@@ -225,7 +225,7 @@ export async function consumeEmails(
 ) {
   const ch = await connectRabbitMQ();
 
-  await ch.consume(QUEUES.EMAIL, async (msg) => {
+  await ch.consume(QUEUES.EMAIL, async (msg: any) => {
     try {
       await handler(msg);
       if (msg) {
@@ -256,7 +256,7 @@ export async function consumeNotifications(
 ) {
   const ch = await connectRabbitMQ();
 
-  await ch.consume(QUEUES.NOTIFICATION, async (msg) => {
+  await ch.consume(QUEUES.NOTIFICATION, async (msg: any) => {
     try {
       await handler(msg);
       if (msg) {
@@ -280,7 +280,7 @@ export async function consumeChatProcessing(
 ) {
   const ch = await connectRabbitMQ();
 
-  await ch.consume(QUEUES.CHAT_PROCESSING, async (msg) => {
+  await ch.consume(QUEUES.CHAT_PROCESSING, async (msg: any) => {
     try {
       await handler(msg);
       if (msg) {
@@ -308,7 +308,7 @@ export async function consumeChatResponses(
 ) {
   const ch = await connectRabbitMQ();
 
-  await ch.consume(QUEUES.CHAT_RESPONSES, async (msg) => {
+  await ch.consume(QUEUES.CHAT_RESPONSES, async (msg: any) => {
     try {
       await handler(msg);
       if (msg) {
