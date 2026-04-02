@@ -248,7 +248,7 @@ export default function Navbar() {
                               transition: "all 0.25s cubic-bezier(0.16,1,0.3,1)",
                               background: isSubActive ? "rgba(78,205,196,0.15)" : "transparent",
                               position: "relative",
-                              borderBottom: idx < link.submenu.length - 1 ? "1px solid rgba(255,255,255,0.06)" : "none",
+                              borderBottom: idx < link.submenu!.length - 1 ? "1px solid rgba(255,255,255,0.06)" : "none",
                             }}
                             onClick={() => setOpenSubmenu(null)}
                             onMouseEnter={(e) => {
