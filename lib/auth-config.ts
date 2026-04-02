@@ -52,9 +52,6 @@ const authConfig: NextAuthOptions = {
       }
       return sess;
     },
-      }
-      return session;
-    },
   },
 
   // Credentials provider - Email + Password authentication
