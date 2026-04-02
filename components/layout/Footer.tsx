@@ -22,7 +22,7 @@ export default function Footer() {
 
           {/* Links */}
           {[
-            { title: "Product", links: [{ label: "Features", href: "/features" }, { label: "Live Demo", href: "/chat" }, { label: "Pricing", href: "/pricing" }, { label: "Changelog", href: "#" }] },
+            { title: "Product", links: [{ label: "Features", href: "/features" }, { label: "Live Demo", href: "/chat" }, { label: "Pricing", href: "/pricing" }, { label: "Changelog", href: "/changelog" }] },
             { title: "Resources", links: [{ label: "Documentation", href: "#" }, { label: "API Reference", href: "#" }, { label: "Blog", href: "#" }, { label: "Status", href: "#" }] },
             { title: "Company", links: [{ label: "About", href: "#" }, { label: "Careers", href: "#" }, { label: "Privacy", href: "#" }, { label: "Terms", href: "#" }] },
           ].map((col) => (
@@ -40,7 +40,7 @@ export default function Footer() {
         </div>
 
         <div style={{ borderTop: "1px solid var(--gb)", paddingTop: 24, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <span style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.3)" }}>© 2025 Aria AI. All rights reserved.</span>
+          <span style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.3)" }}>© 2026 Aria AI. All rights reserved.</span>
           <span style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.3)" }}>AI Chatbot for Customer Support</span>
         </div>
       </div>
