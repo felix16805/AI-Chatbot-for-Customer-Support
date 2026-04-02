@@ -248,7 +248,7 @@ Suitable for:
 
 ---
 
-**Last Updated**: January 2024  
-**Created**: Single Developer  
+**Last Updated**: April 2026  
+**Created by**: Dipanjan Das, Gurjot Singh, Anish Padavala  
 **License**: Educational  
 **Status**: Production Ready ✅
