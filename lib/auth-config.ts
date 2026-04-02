@@ -39,15 +39,15 @@ const authConfig: NextAuthOptions = {
 
   // JWT callback with custom claims
   callbacks: {
-    async jwt({ token, user }: { token: Record<string, unknown>; user?: { id: string; email?: string | null; name?: string | null; image?: string | null } | null }) {
+    async jwt({ token, user }: any) {
       if (user) {
         token.id = user.id;
       }
       return token;
     },
-    async session({ session, token }: { session: { user?: Partial<typeof DefaultSession["user"]> }; token: Record<string, unknown> }) {
+    async session({ session, token }: any) {
       if (session.user && token.id) {
-        (session.user as any).id = token.id as string;
+        session.user.id = token.id as string;
       }
       return session;
     },
