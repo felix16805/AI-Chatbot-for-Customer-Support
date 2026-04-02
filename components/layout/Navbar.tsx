@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { LogOut, User } from "lucide-react";
 
@@ -26,6 +26,7 @@ export default function Navbar() {
   const { isAuthenticated, user, logout, isLoading } = useAuth();
   const [showDropdown, setShowDropdown] = useState(false);
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
+  const submenuRef = useRef<HTMLLIElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -34,6 +35,24 @@ export default function Navbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Handle click outside to close submenu
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (submenuRef.current && !submenuRef.current.contains(e.target as Node)) {
+        // Check if click is outside the product button area
+        const target = e.target as HTMLElement;
+        if (!target.closest('button') || !target.textContent?.includes('Product')) {
+          setOpenSubmenu(null);
+        }
+      }
+    };
+
+    if (openSubmenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [openSubmenu]);
 
   const handleLogout = async () => {
     await logout();
@@ -130,6 +149,7 @@ export default function Navbar() {
             <li 
               key={link.label}
               style={{ position: "relative" }}
+              ref={hasSubmenu ? submenuRef : null}
             >
               {hasSubmenu ? (
                 <div>

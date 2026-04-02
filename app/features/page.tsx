@@ -115,42 +115,6 @@ export default function FeaturesPage() {
         </div>
       </section>
 
-      <section style={{ position: "relative", zIndex: 10, padding: "80px 56px", background: "linear-gradient(135deg, rgba(255,107,107,0.03), rgba(255,179,71,0.02))" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <div style={{ textAlign: "center", marginBottom: 56 }}>
-            <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 800, color: "white", marginBottom: 16, fontFamily: "'Syne', sans-serif" }}>Simple, Transparent Pricing</h2>
-            <p style={{ fontSize: "1rem", color: "rgba(255,255,255,0.55)", lineHeight: 1.7 }}>Start free, scale as you grow</p>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 32 }}>
-            {[
-              { name: "Starter", price: "Free", description: "Perfect for getting started", features: ["Up to 100 chats/month", "Basic analytics", "Email support", "Single user"] },
-              { name: "Professional", price: "$99", period: "/month", description: "For growing teams", features: ["Unlimited chats", "Advanced analytics", "Priority support", "5 team members", "Custom AI training"], highlight: true },
-              { name: "Enterprise", price: "Custom", description: "For large organizations", features: ["Everything in Pro", "Dedicated support", "SLA guarantee", "Unlimited team members", "Custom integrations"] },
-            ].map((plan) => (
-              <div key={plan.name} style={{ borderRadius: 20, padding: "40px 32px", transition: "all 0.25s", background: plan.highlight ? "linear-gradient(135deg, rgba(255,107,107,0.15), rgba(255,179,71,0.1))" : "rgba(255,255,255,0.02)", border: plan.highlight ? "1px solid rgba(255,107,107,0.3)" : "1px solid rgba(255,255,255,0.08)", transform: plan.highlight ? "scale(1.02)" : "scale(1)" }}>
-                <h3 style={{ fontSize: "1.4rem", fontWeight: 800, color: "white", marginBottom: 8, fontFamily: "'Syne', sans-serif" }}>{plan.name}</h3>
-                <p style={{ fontSize: "0.95rem", color: "rgba(255,255,255,0.5)", marginBottom: 24 }}>{plan.description}</p>
-                <div style={{ marginBottom: 32 }}>
-                  <span style={{ fontSize: "2.8rem", fontWeight: 800, color: "white", fontFamily: "'Syne', sans-serif" }}>{plan.price}</span>
-                  {plan.period && <span style={{ color: "rgba(255,255,255,0.5)" }}>{plan.period}</span>}
-                </div>
-                <ul style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 32 }}>
-                  {plan.features.map((feature) => (
-                    <li key={feature} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: "0.95rem", color: "rgba(255,255,255,0.65)" }}>
-                      <CheckCircle size={16} style={{ color: "#FF6B6B", flexShrink: 0 }} />
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-                <button style={{ width: "100%", padding: "14px 20px", borderRadius: 14, fontFamily: "'DM Sans', sans-serif", fontWeight: 600, border: "none", cursor: "pointer", fontSize: "1rem", transition: "all 0.25s", background: plan.highlight ? "linear-gradient(135deg, #FF6B6B, #FFB347)" : "rgba(255,255,255,0.08)", color: "white" }} onMouseEnter={(e) => { if (plan.highlight) { (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 12px 32px rgba(255,107,107,0.3)"; } else { (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,255,255,0.12)"; } }} onMouseLeave={(e) => { if (plan.highlight) { (e.currentTarget as HTMLButtonElement).style.boxShadow = "none"; } else { (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,255,255,0.08)"; } }}>
-                  {plan.name === "Enterprise" ? "Contact Sales" : "Get Started"}
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       <section style={{ position: "relative", zIndex: 10, padding: "80px 56px" }}>
         <div style={{ maxWidth: 900, margin: "0 auto", background: "linear-gradient(135deg, rgba(255,107,107,0.1), rgba(255,179,71,0.08))", border: "1px solid rgba(255,107,107,0.2)", borderRadius: 24, padding: "56px 48px", textAlign: "center", position: "relative", overflow: "hidden" }}>
           <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 50% 50%, rgba(78,205,196,0.05), transparent 70%)", pointerEvents: "none" }} />

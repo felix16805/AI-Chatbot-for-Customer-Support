@@ -5,313 +5,315 @@ import Link from "next/link";
 
 export default function ProductOverview() {
   return (
-    <section style={{ maxWidth: 1200, margin: "0 auto", padding: "100px 56px 80px" }}>
-      {/* Header */}
-      <div style={{ marginBottom: 80, textAlign: "center" }}>
-        <div
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 8,
-            background: "var(--glass)",
-            border: "1px solid var(--gb)",
-            borderRadius: 50,
-            padding: "8px 20px",
-            fontSize: "0.76rem",
-            color: "var(--mint)",
-            fontWeight: 600,
-            marginBottom: 24,
-            letterSpacing: "0.04em",
-            backdropFilter: "blur(8px)",
-          }}
-        >
-          <span className="animate-pulse-dot" style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--mint)", display: "inline-block" }} />
-          Intelligent Support Cloud
-        </div>
-        <h1
-          style={{
-            fontFamily: "'Syne', sans-serif",
-            fontSize: "clamp(2.4rem, 4vw, 3.8rem)",
-            fontWeight: 900,
-            lineHeight: 1.1,
-            marginBottom: 24,
-            maxWidth: 900,
-            margin: "0 auto 24px",
-          }}
-        >
-          Meet <span className="grad-text">Aria</span> — Your AI Support Partner
-        </h1>
-        <p
-          style={{
-            fontSize: "1.05rem",
-            color: "rgba(255,255,255,0.6)",
-            lineHeight: 1.8,
-            maxWidth: 700,
-            margin: "0 auto",
-          }}
-        >
-          A powerhouse AI chatbot designed to handle customer support 24/7. Resolves complex queries, manages orders, escalates intelligently, and learns with every interaction.
-        </p>
-      </div>
+    <div style={{ width: "100%" }}>
+    <div style={{ width: "100%" }}>
+      {/* Hero Section */}
+      <section style={{ maxWidth: 1200, margin: "0 auto", padding: "100px 56px 80px" }}>
+        {/* Header */}
+        <div style={{ marginBottom: 80, maxWidth: 900 }}>
+          <div
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              background: "var(--glass)",
+              border: "1px solid var(--gb)",
+              borderRadius: 50,
+              padding: "8px 20px",
+              fontSize: "0.76rem",
+              color: "var(--mint)",
+              fontWeight: 600,
+              marginBottom: 24,
+              letterSpacing: "0.04em",
+              backdropFilter: "blur(8px)",
+            }}
+          >
+            <span className="animate-pulse-dot" style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--mint)", display: "inline-block" }} />
+            The Future of Customer Support
+          </div>
 
-      {/* Hero Product Visual */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: 60,
-          alignItems: "center",
-          marginBottom: 100,
-        }}
-      >
-        {/* Left - Features List */}
-        <div>
-          <h2
+          <h1
             style={{
               fontFamily: "'Syne', sans-serif",
-              fontSize: "1.85rem",
-              fontWeight: 800,
-              marginBottom: 40,
-              lineHeight: 1.2,
+              fontSize: "clamp(2.6rem, 5vw, 4.2rem)",
+              fontWeight: 900,
+              lineHeight: 1.08,
+              marginBottom: 28,
             }}
           >
-            Built for Modern Support Teams
-          </h2>
+            Meet <span className="grad-text">Aria</span> — AI Support That Actually Works
+          </h1>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-            {[
-              { title: "Instant Resolution", desc: "Handle 80%+ of queries without human intervention using advanced NLP" },
-              { title: "24/7 Availability", desc: "Never miss a customer. Support across all time zones, every day" },
-              { title: "Seamless Integration", desc: "Works with your existing tools — helpdesk, CRM, payment systems" },
-              { title: "Escalation Flow", desc: "Complex issues automatically route to the right agent team" },
-            ].map((item, idx) => (
-              <div key={idx} style={{ display: "flex", gap: 16 }}>
-                <div
-                  style={{
-                    width: 4,
-                    height: 4,
-                    borderRadius: "50%",
-                    background: "linear-gradient(135deg, var(--coral), var(--amber))",
-                    marginTop: 8,
-                    flexShrink: 0,
-                    boxShadow: "0 0 10px rgba(255,107,107,0.5)",
-                  }}
-                />
-                <div>
-                  <h4 style={{ fontWeight: 700, marginBottom: 6, fontSize: "1rem" }}>{item.title}</h4>
-                  <p style={{ fontSize: "0.95rem", color: "rgba(255,255,255,0.5)", lineHeight: 1.6 }}>{item.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+          <p
+            style={{
+              fontSize: "1.15rem",
+              color: "rgba(255,255,255,0.65)",
+              lineHeight: 1.85,
+              maxWidth: 700,
+            }}
+          >
+            Resolve 80%+ of customer issues instantly. 24/7 support that learns, improves, and scales with your business—without adding headcount.
+          </p>
         </div>
 
-        {/* Right - Visual Card */}
+        {/* Stats Section */}
         <div
           style={{
-            position: "relative",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            height: 480,
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+            gap: 24,
+            marginBottom: 100,
           }}
         >
-          {/* Glowing Background Orb */}
-          <div
-            style={{
-              position: "absolute",
-              width: 320,
-              height: 320,
-              borderRadius: "50%",
-              background: "radial-gradient(circle, rgba(78,205,196,0.15), transparent 70%)",
-              filter: "blur(60px)",
-              animation: "orbFloat 8s ease-in-out infinite",
-            }}
-          />
-
-          {/* Card */}
-          <div
-            style={{
-              position: "relative",
-              background: "linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02))",
-              border: "1px solid rgba(78,205,196,0.3)",
-              borderRadius: 20,
-              padding: 40,
-              backdropFilter: "blur(20px)",
-              boxShadow: "0 20px 60px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.1)",
-              maxWidth: 340,
-              zIndex: 1,
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
+          {[
+            { stat: "80%+", label: "Issues Resolved Instantly", highlight: "var(--mint)" },
+            { stat: "<800ms", label: "Average Response Time", highlight: "var(--coral)" },
+            { stat: "24/7", label: "Always Available", highlight: "var(--amber)" },
+            { stat: "40+", label: "Integrations Ready", highlight: "var(--violet)" },
+          ].map((item, idx) => (
+            <div
+              key={idx}
+              style={{
+                background: "linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02))",
+                border: "1px solid rgba(255,255,255,0.08)",
+                borderRadius: 16,
+                padding: 28,
+                backdropFilter: "blur(10px)",
+                textAlign: "center",
+                transition: "all 0.3s cubic-bezier(0.16,1,0.3,1)",
+              }}
+              onMouseEnter={(e) => {
+                const el = e.currentTarget as HTMLElement;
+                el.style.background = "linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.04))";
+                el.style.borderColor = item.highlight;
+                el.style.transform = "translateY(-6px)";
+              }}
+              onMouseLeave={(e) => {
+                const el = e.currentTarget as HTMLElement;
+                el.style.background = "linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02))";
+                el.style.borderColor = "rgba(255,255,255,0.08)";
+                el.style.transform = "translateY(0)";
+              }}
+            >
               <div
                 style={{
-                  width: 12,
-                  height: 12,
-                  borderRadius: "50%",
-                  background: "linear-gradient(135deg, var(--coral), var(--amber))",
-                  animation: "pulse 2s ease-in-out infinite",
-                  boxShadow: "0 0 20px var(--coral)",
-                }}
-              />
-              <span style={{ fontSize: "0.8rem", fontWeight: 600, color: "var(--mint)", letterSpacing: "0.08em" }}>LIVE AI</span>
-            </div>
-
-            <h3 style={{ fontFamily: "'Syne', sans-serif", fontSize: "1.5rem", fontWeight: 800, marginBottom: 16 }}>Always Learning</h3>
-            <p style={{ fontSize: "0.95rem", color: "rgba(255,255,255,0.6)", lineHeight: 1.7, marginBottom: 24 }}>
-              Each interaction trains Aria to be smarter. Your support system improves automatically.
-            </p>
-
-            <div style={{ display: "flex", gap: 8 }}>
-              <div
-                style={{
-                  flex: 1,
-                  height: 40,
-                  background: "rgba(78,205,196,0.1)",
-                  border: "1px solid rgba(78,205,196,0.3)",
-                  borderRadius: 8,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "0.8rem",
-                  color: "var(--mint)",
-                  fontWeight: 600,
+                  fontSize: "2.5rem",
+                  fontWeight: 900,
+                  fontFamily: "'Syne', sans-serif",
+                  background: `linear-gradient(135deg, ${item.highlight}, rgba(255,255,255,0.3))`,
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                  marginBottom: 8,
                 }}
               >
-                ✓ Connected
+                {item.stat}
               </div>
-              <div
-                style={{
-                  flex: 1,
-                  height: 40,
-                  background: "rgba(255,107,107,0.1)",
-                  border: "1px solid rgba(255,107,107,0.3)",
-                  borderRadius: 8,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "0.8rem",
-                  color: "var(--coral)",
-                  fontWeight: 600,
-                }}
-              >
-                ⚡ Active
-              </div>
+              <div style={{ fontSize: "0.9rem", color: "rgba(255,255,255,0.6)" }}>{item.label}</div>
             </div>
-          </div>
+          ))}
         </div>
-      </div>
+      </section>
 
-      {/* Core Capabilities Grid */}
-      <div style={{ marginBottom: 100 }}>
-        <div style={{ marginBottom: 50 }}>
+      {/* Use Cases Section */}
+      <section
+        style={{
+          maxWidth: 1200,
+          margin: "0 auto",
+          padding: "60px 56px",
+          marginBottom: 80,
+        }}
+      >
+        <div style={{ marginBottom: 60, textAlign: "center" }}>
           <h2
             style={{
               fontFamily: "'Syne', sans-serif",
               fontSize: "2rem",
-              fontWeight: 800,
+              fontWeight: 900,
               marginBottom: 16,
-              lineHeight: 1.2,
             }}
           >
-            Core Capabilities
+            Works for Any Industry
           </h2>
-          <p style={{ fontSize: "1rem", color: "rgba(255,255,255,0.55)", maxWidth: 600 }}>
-            Everything needed for world-class customer support operations
+          <p style={{ fontSize: "1rem", color: "rgba(255,255,255,0.6)", maxWidth: 600, margin: "0 auto" }}>
+            From e-commerce to SaaS, Aria adapts to your business needs
           </p>
         </div>
 
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-            gap: 24,
+            gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+            gap: 28,
           }}
         >
           {[
             {
-              icon: "💬",
-              title: "Multi-Channel Conversations",
-              desc: "Support customers across chat, email, social media, and voice from a unified interface",
+              icon: "🛍️",
+              title: "E-Commerce",
+              benefits: ["Order tracking", "Returns & refunds", "Product recommendations"],
+              color: "var(--coral)",
             },
             {
-              icon: "🔍",
-              title: "Intelligent Search",
-              desc: "Find solutions instantly with semantic understanding of customer intents",
+              icon: "💳",
+              title: "SaaS & Tech",
+              benefits: ["Technical support", "Account issues", "Billing help"],
+              color: "var(--mint)",
             },
             {
-              icon: "🧠",
-              title: "Contextual Awareness",
-              desc: "Understands full customer history, preferences, and issue context",
+              icon: "🏥",
+              title: "Healthcare",
+              benefits: ["Appointment booking", "Insurance info", "Basic health Q&A"],
+              color: "var(--amber)",
             },
             {
-              icon: "📊",
-              title: "Real-Time Analytics",
-              desc: "Track satisfaction scores, response times, and resolution metrics live",
+              icon: "🏦",
+              title: "Financial Services",
+              benefits: ["Account inquiries", "Transaction help", "Fraud prevention"],
+              color: "var(--violet)",
             },
-            {
-              icon: "🔗",
-              title: "API Integrations",
-              desc: "Connect with Shopify, Salesforce, Zendesk, Stripe, and 1000+ apps",
-            },
-            {
-              icon: "🛡️",
-              title: "Enterprise Security",
-              desc: "SOC 2 compliant with end-to-end encryption and data residency options",
-            },
-          ].map((capability, idx) => (
+          ].map((useCase, idx) => (
             <div
               key={idx}
               style={{
                 background: "linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02))",
-                border: "1px solid var(--gb)",
-                borderRadius: 16,
-                padding: 32,
+                border: "1px solid rgba(255,255,255,0.08)",
+                borderRadius: 20,
+                padding: 36,
                 backdropFilter: "blur(10px)",
                 transition: "all 0.3s cubic-bezier(0.16,1,0.3,1)",
-                cursor: "pointer",
-                position: "relative",
-                overflow: "hidden",
               }}
               onMouseEnter={(e) => {
                 const el = e.currentTarget as HTMLElement;
-                el.style.background = "linear-gradient(135deg, rgba(78,205,196,0.1), rgba(255,107,107,0.05))";
-                el.style.borderColor = "rgba(78,205,196,0.5)";
+                el.style.background = `linear-gradient(135deg, rgba(255,255,255,0.09), rgba(255,255,255,0.03))`;
+                el.style.borderColor = useCase.color;
                 el.style.transform = "translateY(-8px)";
               }}
               onMouseLeave={(e) => {
                 const el = e.currentTarget as HTMLElement;
                 el.style.background = "linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02))";
-                el.style.borderColor = "rgba(255,255,255,0.12)";
+                el.style.borderColor = "rgba(255,255,255,0.08)";
                 el.style.transform = "translateY(0)";
               }}
             >
-              <div style={{ fontSize: "2.5rem", marginBottom: 16 }}>{capability.icon}</div>
-              <h3 style={{ fontWeight: 700, fontSize: "1.1rem", marginBottom: 8, fontFamily: "'Syne', sans-serif" }}>
-                {capability.title}
+              <div style={{ fontSize: "3rem", marginBottom: 16 }}>{useCase.icon}</div>
+              <h3 style={{ fontFamily: "'Syne', sans-serif", fontSize: "1.3rem", fontWeight: 800, marginBottom: 20, color: useCase.color }}>
+                {useCase.title}
               </h3>
-              <p style={{ fontSize: "0.95rem", color: "rgba(255,255,255,0.5)", lineHeight: 1.6 }}>{capability.desc}</p>
+              <ul style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                {useCase.benefits.map((benefit, i) => (
+                  <li key={i} style={{ fontSize: "0.95rem", color: "rgba(255,255,255,0.65)", display: "flex", gap: 10, alignItems: "center" }}>
+                    <span style={{ color: useCase.color, fontWeight: 700 }}>✓</span>
+                    {benefit}
+                  </li>
+                ))}
+              </ul>
             </div>
           ))}
         </div>
-      </div>
+      </section>
 
-      {/* CTA Section */}
-      <div
+      {/* ROI Section */}
+      <section
         style={{
-          background: "linear-gradient(135deg, rgba(78,205,196,0.1), rgba(255,107,107,0.05))",
-          border: "1px solid rgba(78,205,196,0.3)",
-          borderRadius: 20,
-          padding: "60px 56px",
-          textAlign: "center",
-          backdropFilter: "blur(10px)",
+          maxWidth: 1200,
+          margin: "0 auto",
+          padding: "80px 56px",
+          marginBottom: 80,
         }}
       >
+        <div
+          style={{
+            background: "linear-gradient(135deg, rgba(78,205,196,0.1), rgba(255,107,107,0.05))",
+            border: "1px solid rgba(78,205,196,0.3)",
+            borderRadius: 24,
+            padding: "60px",
+            backdropFilter: "blur(10px)",
+          }}
+        >
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 60, alignItems: "center" }}>
+            <div>
+              <h2
+                style={{
+                  fontFamily: "'Syne', sans-serif",
+                  fontSize: "2.2rem",
+                  fontWeight: 900,
+                  marginBottom: 24,
+                  lineHeight: 1.2,
+                }}
+              >
+                Save Money, Improve Satisfaction
+              </h2>
+              <p style={{ fontSize: "1rem", color: "rgba(255,255,255,0.65)", marginBottom: 32, lineHeight: 1.8 }}>
+                Companies using Aria report average cost savings of 60% on support operations and 40% faster resolution times.
+              </p>
+              <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                {[
+                  "Reduce support team costs by training AI instead of hiring agents",
+                  "Eliminate peak-hour wait times forever",
+                  "Increase customer satisfaction with instant responses",
+                  "Gain actionable insights from conversation data",
+                ].map((item, idx) => (
+                  <div key={idx} style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
+                    <span style={{ color: "var(--mint)", fontWeight: 900, fontSize: "1.2rem", flexShrink: 0 }}>✓</span>
+                    <span style={{ fontSize: "0.95rem", color: "rgba(255,255,255,0.75)" }}>{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: 16,
+              }}
+            >
+              {[
+                { label: "60%", desc: "Cost Reduction", color: "var(--coral)" },
+                { label: "40%", desc: "Faster Resolution", color: "var(--mint)" },
+                { label: "35%", desc: "More Capacity", color: "var(--amber)" },
+                { label: "92%", desc: "CSAT Increase", color: "var(--violet)" },
+              ].map((metric, idx) => (
+                <div
+                  key={idx}
+                  style={{
+                    background: "rgba(26,26,46,0.5)",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    borderRadius: 12,
+                    padding: 20,
+                    textAlign: "center",
+                    backdropFilter: "blur(10px)",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: "2rem",
+                      fontWeight: 900,
+                      fontFamily: "'Syne', sans-serif",
+                      background: `linear-gradient(135deg, ${metric.color}, rgba(255,255,255,0.2))`,
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      backgroundClip: "text",
+                      marginBottom: 4,
+                    }}
+                  >
+                    {metric.label}
+                  </div>
+                  <div style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.6)" }}>{metric.desc}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section style={{ maxWidth: 1200, margin: "0 auto", padding: "60px 56px 100px", textAlign: "center" }}>
         <h2
           style={{
             fontFamily: "'Syne', sans-serif",
             fontSize: "2rem",
-            fontWeight: 800,
+            fontWeight: 900,
             marginBottom: 16,
           }}
         >
@@ -321,12 +323,12 @@ export default function ProductOverview() {
           style={{
             fontSize: "1.05rem",
             color: "rgba(255,255,255,0.6)",
-            marginBottom: 32,
+            marginBottom: 40,
             maxWidth: 600,
-            margin: "0 auto 32px",
+            margin: "0 auto 40px",
           }}
         >
-          Try Aria free for 14 days. No credit card needed. See why thousands of teams trust Aria for support.
+          Start free for 14 days. See the Aria difference firsthand. No credit card required.
         </p>
         <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
           <Link href="/chat">
@@ -335,34 +337,34 @@ export default function ProductOverview() {
                 background: "linear-gradient(135deg, var(--coral), var(--amber))",
                 border: "none",
                 borderRadius: 12,
-                padding: "14px 32px",
+                padding: "16px 36px",
                 fontFamily: "'Syne', sans-serif",
                 fontWeight: 700,
                 fontSize: "1rem",
                 color: "#000",
                 cursor: "pointer",
                 transition: "all 0.3s cubic-bezier(0.16,1,0.3,1)",
-                boxShadow: "0 10px 30px rgba(255,107,107,0.3)",
+                boxShadow: "0 12px 32px rgba(255,107,107,0.3)",
               }}
               onMouseEnter={(e) => {
                 (e.currentTarget as HTMLElement).style.transform = "translateY(-4px)";
-                (e.currentTarget as HTMLElement).style.boxShadow = "0 15px 40px rgba(255,107,107,0.4)";
+                (e.currentTarget as HTMLElement).style.boxShadow = "0 16px 48px rgba(255,107,107,0.4)";
               }}
               onMouseLeave={(e) => {
                 (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
-                (e.currentTarget as HTMLElement).style.boxShadow = "0 10px 30px rgba(255,107,107,0.3)";
+                (e.currentTarget as HTMLElement).style.boxShadow = "0 12px 32px rgba(255,107,107,0.3)";
               }}
             >
-              Try Live Demo
+              Try Live Demo →
             </button>
           </Link>
-          <Link href="/pricing">
+          <Link href="/features">
             <button
               style={{
                 background: "transparent",
                 border: "1.5px solid var(--gb)",
                 borderRadius: 12,
-                padding: "13px 32px",
+                padding: "15px 36px",
                 fontFamily: "'Syne', sans-serif",
                 fontWeight: 700,
                 fontSize: "1rem",
@@ -372,7 +374,7 @@ export default function ProductOverview() {
               }}
               onMouseEnter={(e) => {
                 const el = e.currentTarget as HTMLElement;
-                el.style.background = "rgba(255,255,255,0.08)";
+                el.style.background = "rgba(78,205,196,0.1)";
                 el.style.borderColor = "var(--mint)";
                 el.style.transform = "translateY(-4px)";
               }}
@@ -383,11 +385,11 @@ export default function ProductOverview() {
                 el.style.transform = "translateY(0)";
               }}
             >
-              View Pricing
+              Explore Features
             </button>
           </Link>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   );
 }
