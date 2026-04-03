@@ -9,6 +9,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     strategy:
       matrix:
@@ -29,6 +30,8 @@ jobs:
 
       - name: Generate Prisma client
         run: npx prisma generate
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
 
       - name: Run type check
         run: npx tsc --noEmit
@@ -38,6 +41,7 @@ jobs:
         env:
           NEXTAUTH_SECRET: ci-secret-key
           NEXTAUTH_URL: http://localhost:3000
+          NODE_OPTIONS: --max-old-space-size=4096
 
       - name: Generate build report
         if: always()
@@ -48,12 +52,12 @@ jobs:
           echo "Timestamp: $(date)" >> build-report.md
 
       - name: Upload build artifacts
-        if: success()
+        if: always() && hashFiles('.next') != ''
         uses: actions/upload-artifact@v4
         with:
           name: build-artifacts-node${{ matrix.node-version }}
           path: .next
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 7
 
       - name: Comment PR with build status
@@ -70,9 +74,13 @@ jobs:
             - Node Version: ${{ matrix.node-version }}
             - Build Time: ${new Date().toISOString()}`;
             
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: comment
-            });
+            try {
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+            } catch (error) {
+              console.log('Could not post comment:', error.message);
+            }
