@@ -265,16 +265,17 @@ export async function consumeNotifications(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await handler(msg as any);
       if (msg) {
-        ch.ack(msg);
+        ch.ack(msg as any);
       }
     } catch (
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       _error
     ) {
-      if (msg && !msg.fields.redelivered) {
-        ch.nack(msg, false, true);
-      } else if (msg) {
-        ch.nack(msg, false, false);
+      const typedMsg = msg as any;
+      if (typedMsg && !typedMsg.fields.redelivered) {
+        ch.nack(typedMsg, false, true);
+      } else if (typedMsg) {
+        ch.nack(typedMsg, false, false);
       }
     }
   });
@@ -293,7 +294,7 @@ export async function consumeChatProcessing(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await handler(msg as any);
       if (msg) {
-        ch.ack(msg);
+        ch.ack(msg as any);
       }
     } catch (
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -303,10 +304,11 @@ export async function consumeChatProcessing(
         type: 'chat_handler_error'
       });
 
-      if (msg && !msg.fields.redelivered) {
-        ch.nack(msg, false, true);
-      } else if (msg) {
-        ch.nack(msg, false, false);
+      const typedMsg = msg as any;
+      if (typedMsg && !typedMsg.fields.redelivered) {
+        ch.nack(typedMsg, false, true);
+      } else if (typedMsg) {
+        ch.nack(typedMsg, false, false);
       }
     }
   });
@@ -325,14 +327,15 @@ export async function consumeChatResponses(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await handler(msg as any);
       if (msg) {
-        ch.ack(msg);
+        ch.ack(msg as any);
       }
     } catch (
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       _error
     ) {
-      if (msg) {
-        ch.nack(msg, false, false);
+      const typedMsg = msg as any;
+      if (typedMsg) {
+        ch.nack(typedMsg, false, false);
       }
     }
   });
