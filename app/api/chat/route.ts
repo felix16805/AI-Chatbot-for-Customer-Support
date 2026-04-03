@@ -215,7 +215,7 @@ const chatHandler = withErrorHandling(
     }
 
     const { chatSessionId, content: rawContent } = validation.data;
-    let content = sanitizeString(rawContent);
+    const content = sanitizeString(rawContent);
 
     // ========== AUTHORIZATION ==========
     // Verify user owns this chat session

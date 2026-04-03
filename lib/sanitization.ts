@@ -40,7 +40,7 @@ export function sanitizeEmail(email: string): string {
  * Remove sensitive fields from objects before logging
  * OWASP: Don't expose credentials, tokens, or sensitive data
  */
-export function stripSensitiveFields<T extends Record<string, any>>(
+export function stripSensitiveFields<T extends Record<string, unknown>>(
   obj: T,
   sensitiveFields: string[] = [
     "password",
@@ -192,7 +192,7 @@ export function containsSQLInjectionPatterns(input: string): boolean {
  * Validate and sanitize input object against schema
  * Rejects unknown fields for security
  */
-export function validateAndSanitize<T extends Record<string, any>>(
+export function validateAndSanitize<T extends Record<string, unknown>>(
   input: unknown,
   allowedFields: string[]
 ): T {
@@ -200,11 +200,11 @@ export function validateAndSanitize<T extends Record<string, any>>(
     throw new Error("Input must be an object");
   }
 
-  const sanitized: any = {};
+  const sanitized: Record<string, unknown> = {};
 
   for (const field of allowedFields) {
     if (field in input) {
-      const value = (input as Record<string, any>)[field];
+      const value = (input as Record<string, unknown>)[field];
 
       // Sanitize string values
       if (typeof value === "string") {
@@ -214,7 +214,7 @@ export function validateAndSanitize<T extends Record<string, any>>(
         if (Array.isArray(value)) {
           sanitized[field] = value;
         } else {
-          sanitized[field] = sanitizeNestedObject(value);
+          sanitized[field] = sanitizeNestedObject(value as Record<string, unknown>);
         }
       } else {
         sanitized[field] = value;
@@ -223,7 +223,7 @@ export function validateAndSanitize<T extends Record<string, any>>(
   }
 
   // Check for unknown fields - CRITICAL for API security
-  const inputKeys = Object.keys(input as Record<string, any>);
+  const inputKeys = Object.keys(input as Record<string, unknown>);
   const unknownFields = inputKeys.filter(
     (key) => !allowedFields.includes(key)
   );
@@ -234,14 +234,14 @@ export function validateAndSanitize<T extends Record<string, any>>(
     );
   }
 
-  return sanitized;
+  return sanitized as T;
 }
 
 /**
  * Recursively sanitize nested objects
  */
-function sanitizeNestedObject(obj: any): any {
-  const sanitized: any = {};
+function sanitizeNestedObject(obj: Record<string, unknown>): Record<string, unknown> {
+  const sanitized: Record<string, unknown> = {};
 
   for (const key in obj) {
     const value = obj[key];
@@ -249,7 +249,7 @@ function sanitizeNestedObject(obj: any): any {
     if (typeof value === "string") {
       sanitized[key] = sanitizeString(value);
     } else if (typeof value === "object" && value !== null && !Array.isArray(value)) {
-      sanitized[key] = sanitizeNestedObject(value);
+      sanitized[key] = sanitizeNestedObject(value as Record<string, unknown>);
     } else {
       sanitized[key] = value;
     }

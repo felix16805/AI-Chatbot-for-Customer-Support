@@ -116,13 +116,13 @@ export class ApiKeyManager {
    * Get usage statistics for monitoring
    * Can be used to detect unusual activity
    */
-  getUsageStats(provider?: string): Record<string, any> {
+  getUsageStats(provider?: string): Record<string, { count: number; lastUsed: Date }> {
     if (provider) {
       const stats = this.usageStats.get(provider);
       return stats ? { [provider]: stats } : {};
     }
 
-    const allStats: Record<string, any> = {};
+    const allStats: Record<string, { count: number; lastUsed: Date }> = {};
     for (const [name, stats] of this.usageStats.entries()) {
       allStats[name] = stats;
     }

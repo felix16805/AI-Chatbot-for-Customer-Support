@@ -57,9 +57,9 @@ export const POST = withErrorHandling(async (request: NextRequest | Request) => 
   }
 
   const { email: rawEmail, password: rawPassword, name: rawName } = validation.data;
-  let email = sanitizeEmail(rawEmail);
+  const email = sanitizeEmail(rawEmail);
   const password = rawPassword;
-  let name = rawName.trim();
+  const name = rawName.trim();
 
   // ========== SECURITY: Check for account lockout ==========
   if (isAccountLocked(email)) {
