@@ -4,7 +4,6 @@ import {
   ValidationError,
   AuthenticationError,
   withErrorHandling,
-  successResponse,
 } from "@/lib/errors";
 import {
   verifyPassword,
@@ -57,7 +56,9 @@ export const POST = withErrorHandling(async (request: NextRequest | Request) => 
     throw new ValidationError(errors);
   }
 
-  let { email, password } = validation.data;
+  const { email: rawEmail, password: rawPassword } = validation.data;
+  let email = sanitizeEmail(rawEmail);
+  const password = rawPassword;
 
   // ========== INPUT SANITIZATION ==========
   email = sanitizeEmail(email);

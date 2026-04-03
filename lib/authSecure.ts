@@ -71,9 +71,8 @@ export async function verifyPassword(
 ): Promise<boolean> {
   try {
     return await bcrypt.compare(password, hash);
-  } catch (error) {
+  } catch {
     // Log error but don't expose details to user
-    console.error("Password verification error:", error);
     return false;
   }
 }
@@ -141,7 +140,7 @@ export function verifyToken(
       userId: decoded.userId,
       email: decoded.email,
     };
-  } catch (error) {
+  } catch {
     return null;
   }
 }
@@ -232,7 +231,7 @@ export function recordAuthAttempt(email: string, success: boolean): void {
   );
 }
 
-export default {
+const authSecureExports = {
   hashPassword,
   verifyPassword,
   createToken,
@@ -244,3 +243,5 @@ export default {
   isAccountLocked,
   recordAuthAttempt,
 };
+
+export default authSecureExports;

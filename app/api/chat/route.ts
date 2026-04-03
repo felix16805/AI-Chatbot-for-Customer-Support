@@ -214,11 +214,8 @@ const chatHandler = withErrorHandling(
       throw new ValidationError(errors);
     }
 
-    let { chatSessionId, content } = validation.data;
-
-    // ========== INPUT SANITIZATION ==========
-    // SECURITY: Remove potentially dangerous content
-    content = sanitizeString(content);
+    const { chatSessionId, content: rawContent } = validation.data;
+    let content = sanitizeString(rawContent);
 
     // ========== AUTHORIZATION ==========
     // Verify user owns this chat session

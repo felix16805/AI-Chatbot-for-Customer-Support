@@ -57,7 +57,7 @@ describe('Validation Schemas', () => {
       const validInput = {
         name: 'John Doe',
         email: 'john@example.com',
-        password: 'SecurePass123',
+        password: 'SecurePass123!',
       };
       const result = SignupSchema.safeParse(validInput);
       expect(result.success).toBe(true);
@@ -67,7 +67,7 @@ describe('Validation Schemas', () => {
       const invalidInput = {
         name: 'John Doe',
         email: 'john@example.com',
-        password: 'securepass123',
+        password: 'securepass123!',
       };
       const result = SignupSchema.safeParse(invalidInput);
       expect(result.success).toBe(false);
@@ -77,7 +77,7 @@ describe('Validation Schemas', () => {
       const invalidInput = {
         name: 'John Doe',
         email: 'john@example.com',
-        password: 'SecurePass',
+        password: 'SecurePass!',
       };
       const result = SignupSchema.safeParse(invalidInput);
       expect(result.success).toBe(false);
@@ -87,7 +87,7 @@ describe('Validation Schemas', () => {
       const invalidInput = {
         name: 'J',
         email: 'john@example.com',
-        password: 'SecurePass123',
+        password: 'SecurePass123!',
       };
       const result = SignupSchema.safeParse(invalidInput);
       expect(result.success).toBe(false);

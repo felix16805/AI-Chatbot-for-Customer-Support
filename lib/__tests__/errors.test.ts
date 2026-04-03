@@ -1,9 +1,4 @@
-/**
- * Unit Tests: Error Handling
- * Tests custom error classes and error response formatting
- * SE Principle: Fail-safe design and error classification
- */
-
+import { describe, expect, it } from '@jest/globals';
 import {
   AppError,
   ValidationError,
@@ -13,7 +8,7 @@ import {
   ConflictError,
   RateLimitError,
   InternalServerError,
-} from '@/lib/errors';
+} from '../errors';
 
 describe('Error Classes', () => {
   describe('AppError', () => {
@@ -81,7 +76,7 @@ describe('Error Classes', () => {
     it('should have 429 status code', () => {
       const error = new RateLimitError();
       expect(error.statusCode).toBe(429);
-      expect(error.code).toBe('RATE_LIMIT');
+      expect(error.code).toBe('RATE_LIMIT_ERROR');
     });
   });
 

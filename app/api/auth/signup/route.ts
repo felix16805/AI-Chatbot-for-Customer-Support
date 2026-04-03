@@ -4,7 +4,6 @@ import {
   ValidationError,
   ConflictError,
   withErrorHandling,
-  successResponse,
 } from "@/lib/errors";
 import {
   hashPassword,
@@ -57,12 +56,10 @@ export const POST = withErrorHandling(async (request: NextRequest | Request) => 
     throw new ValidationError(errors);
   }
 
-  let { email, password, name } = validation.data;
-
-  // ========== INPUT SANITIZATION ==========
-  // Normalize and sanitize inputs
-  email = sanitizeEmail(email);
-  name = name.trim();
+  const { email: rawEmail, password: rawPassword, name: rawName } = validation.data;
+  let email = sanitizeEmail(rawEmail);
+  const password = rawPassword;
+  let name = rawName.trim();
 
   // ========== SECURITY: Check for account lockout ==========
   if (isAccountLocked(email)) {
