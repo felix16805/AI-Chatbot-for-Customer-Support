@@ -1,40 +1,153 @@
-import { registerUser, createToken } from "@/lib/auth";
 import { NextRequest, NextResponse } from "next/server";
+import { SignupSchema } from "@/lib/validation";
+import {
+  ValidationError,
+  ConflictError,
+  withErrorHandling,
+  successResponse,
+} from "@/lib/errors";
+import {
+  hashPassword,
+  createToken,
+  sanitizeUserForResponse,
+  isAccountLocked,
+  recordAuthAttempt,
+} from "@/lib/authSecure";
+import { sanitizeEmail } from "@/lib/sanitization";
+import { strictAuthRateLimiter } from "@/lib/rateLimiter";
+import { prisma } from "@/lib/prisma";
+import { logger } from "@/lib/logger";
 
-export async function POST(request: NextRequest) {
+/**
+ * POST /api/auth/signup
+ * Register a new user account
+ * 
+ * Security measures:
+ * - Rate limiting (3 requests per 5 minutes per IP)
+ * - Strict input validation with Zod (rejects unknown fields)
+ * - Input sanitization (XSS prevention)
+ * - Bcrypt password hashing (not base64)
+ * - Account lockout after multiple failed attempts
+ * - Email normalization
+ */
+export const POST = withErrorHandling(async (request: NextRequest) => {
+  // ========== RATE LIMITING ==========
+  // Prevent brute force attacks on signup endpoint
+  await strictAuthRateLimiter(request);
+
+  // ========== PARSE REQUEST ==========
+  let body;
   try {
-    const { email, password, name } = await request.json();
+    body = await request.json();
+  } catch {
+    throw new ValidationError("Invalid JSON in request body");
+  }
 
-    if (!email || !password || !name) {
-      return NextResponse.json(
-        { error: "Email, password, and name are required" },
-        { status: 400 }
-      );
+  // ========== INPUT VALIDATION ==========
+  // Use Zod schema with strict mode (rejects unknown fields)
+  const validation = SignupSchema.safeParse(body);
+  if (!validation.success) {
+    const errors = validation.error.issues
+      .map((issue) => `${issue.path.join(".")}: ${issue.message}`)
+      .join("; ");
+    logger.warn({ inputs: Object.keys(body) }, `Signup validation failed: ${errors}`);
+    throw new ValidationError(errors);
+  }
+
+  let { email, password, name } = validation.data;
+
+  // ========== INPUT SANITIZATION ==========
+  // Normalize and sanitize inputs
+  email = sanitizeEmail(email);
+  name = name.trim();
+
+  // ========== SECURITY: Check for account lockout ==========
+  if (isAccountLocked(email)) {
+    logger.warn({ email }, "Signup attempt on locked account");
+    throw new ValidationError(
+      "Too many signup attempts. Please try again in 15 minutes."
+    );
+  }
+
+  // ========== CHECK EXISTING USER ==========
+  try {
+    const existingUser = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (existingUser) {
+      recordAuthAttempt(email, false);
+      throw new ConflictError("An account with this email already exists");
     }
+  } catch (error) {
+    if (error instanceof ConflictError) throw error;
+    logger.error({ error, email }, "Database check failed during signup");
+    throw error;
+  }
 
-    if (password.length < 6) {
-      return NextResponse.json(
-        { error: "Password must be at least 6 characters" },
-        { status: 400 }
-      );
-    }
+  // ========== HASH PASSWORD ==========
+  // Use bcrypt with 12 rounds (replaces old base64 encoding)
+  let passwordHash;
+  try {
+    passwordHash = await hashPassword(password);
+  } catch (error) {
+    logger.error({ error }, "Password hashing failed");
+    throw new Error("Failed to process signup. Please try again.");
+  }
 
-    const user = await registerUser(email, password, name);
-    const token = createToken(user);
+  // ========== CREATE USER ==========
+  try {
+    const user = await prisma.user.create({
+      data: {
+        email,
+        name,
+        passwordHash, // Use bcrypt hash, not base64
+      },
+    });
 
-    const response = NextResponse.json({ user, token });
+    // Record successful auth attempt
+    recordAuthAttempt(email, true);
+
+    // ========== CREATE TOKEN ==========
+    const token = createToken({ id: user.id, email: user.email, name: user.name });
+
+    // ========== LOG SIGNUP EVENT ==========
+    logger.info({ userId: user.id, email }, "User signed up successfully");
+
+    // ========== RETURN RESPONSE ==========
+    const response = NextResponse.json(
+      {
+        success: true,
+        data: {
+          message: "Account created successfully",
+          user: sanitizeUserForResponse({
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            passwordHash,
+          }),
+        },
+      },
+      { status: 201 }
+    );
+
+    // Set secure HTTP-only cookie
     response.cookies.set("auth_token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 7,
+      httpOnly: true, // Prevents JavaScript access (XSS protection)
+      secure: process.env.NODE_ENV === "production", // HTTPS only in production
+      sameSite: "strict", // CSRF protection
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+      path: "/",
     });
 
     return response;
   } catch (error) {
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Signup failed" },
-      { status: 400 }
-    );
+    if (error instanceof ConflictError) {
+      recordAuthAttempt(email, false);
+      throw error;
+    }
+
+    logger.error({ error, email }, "Failed to create user account");
+    throw error;
   }
-}
+});

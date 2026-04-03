@@ -62,8 +62,11 @@ export class ConflictError extends AppError {
 }
 
 export class RateLimitError extends AppError {
-  constructor(message: string = "Too many requests") {
-    super(message, 429, "RATE_LIMIT", true);
+  public readonly retryAfter?: number; // seconds to wait before retry
+
+  constructor(message: string = "Too many requests", retryAfter?: number) {
+    super(message, 429, "RATE_LIMIT_ERROR", true);
+    this.retryAfter = retryAfter;
   }
 }
 
@@ -119,6 +122,7 @@ export function errorResponse(
   let message = "An error occurred";
   let code = "INTERNAL_SERVER_ERROR";
   let details: unknown;
+  let retryAfter: number | undefined;
 
   if (typeof error === "string") {
     message = error;
@@ -134,8 +138,21 @@ export function errorResponse(
     statusCode = error.statusCode;
     code = error.code;
     message = error.message;
+    // Extract retry-after for rate limit errors
+    if (error instanceof RateLimitError && error.retryAfter) {
+      retryAfter = error.retryAfter;
+    }
   } else if (error instanceof Error) {
     message = error.message;
+  }
+
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+
+  // Add Retry-After header for rate limit responses
+  if (retryAfter) {
+    headers["Retry-After"] = String(retryAfter);
   }
 
   return new NextResponse(
@@ -146,7 +163,7 @@ export function errorResponse(
     } as ApiResponse),
     {
       status: statusCode,
-      headers: { "Content-Type": "application/json" },
+      headers,
     }
   );
 }

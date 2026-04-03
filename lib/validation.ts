@@ -8,40 +8,93 @@ import { z } from "zod";
 // AUTH VALIDATION
 // ============================================================================
 
-export const LoginSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  password: z
-    .string()
-    .min(6, "Password must be at least 6 characters")
-    .max(100, "Password too long"),
-});
+/**
+ * Login validation schema with strict field checking
+ * - Rejects unknown fields (security: prevents injection of extra data)
+ * - Email validation
+ * - Password length limits
+ */
+export const LoginSchema = z
+  .object({
+    email: z
+      .string()
+      .min(1, "Email is required")
+      .email("Invalid email address")
+      .max(255, "Email too long"),
+    password: z
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .max(100, "Password too long"),
+  })
+  .strict(); // SECURITY: Reject unknown fields
 
-export const SignupSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Invalid email address"),
-  password: z
-    .string()
-    .min(6, "Password must be at least 6 characters")
-    .max(100, "Password too long")
-    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .regex(/[0-9]/, "Password must contain at least one number"),
-});
+/**
+ * Signup validation schema with strict field checking
+ * - Enhanced password requirements (8+ chars, uppercase, lowercase, number)
+ * - Name validation with length limits
+ * - Rejects unknown fields
+ */
+export const SignupSchema = z
+  .object({
+    name: z
+      .string()
+      .min(2, "Name must be at least 2 characters")
+      .max(100, "Name too long")
+      .regex(/^[a-zA-Z\s'-]+$/, "Name can only contain letters, spaces, hyphens, and apostrophes"),
+    email: z
+      .string()
+      .min(1, "Email is required")
+      .email("Invalid email address")
+      .max(255, "Email too long"),
+    password: z
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .max(100, "Password too long")
+      .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+      .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+      .regex(/[0-9]/, "Password must contain at least one number")
+      .regex(/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/, "Password must contain at least one special character"),
+  })
+  .strict(); // SECURITY: Reject unknown fields
 
 // ============================================================================
 // CHAT VALIDATION
 // ============================================================================
 
-export const CreateChatSessionSchema = z.object({
-  title: z.string().min(1).max(200).optional(),
-});
+/**
+ * Create chat session validation
+ * - Rejects unknown fields
+ * - Optional title with length limits
+ */
+export const CreateChatSessionSchema = z
+  .object({
+    title: z
+      .string()
+      .min(1, "Title cannot be empty")
+      .max(200, "Title too long")
+      .optional(),
+  })
+  .strict(); // SECURITY: Reject unknown fields
 
-export const SendMessageSchema = z.object({
-  chatSessionId: z.string().cuid("Invalid chat session ID"),
-  content: z
-    .string()
-    .min(1, "Message cannot be empty")
-    .max(5000, "Message too long"),
-});
+/**
+ * Send message validation with strict input checking
+ * - CUID validation for chat session ID
+ * - Message length limits (prevents DoS via huge messages)
+ * - Rejects unknown fields
+ * - No HTML/script tags allowed (handled by sanitization layer)
+ */
+export const SendMessageSchema = z
+  .object({
+    chatSessionId: z
+      .string()
+      .cuid("Invalid chat session ID")
+      .min(1, "Chat session ID is required"),
+    content: z
+      .string()
+      .min(1, "Message cannot be empty")
+      .max(5000, "Message too long (max 5000 characters)"),
+  })
+  .strict(); // SECURITY: Reject unknown fields
 
 // ============================================================================
 // PAGINATION & FILTERING
