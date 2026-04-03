@@ -192,7 +192,9 @@ const chatHandler = withErrorHandling(
     // ========== RATE LIMITING ==========
     // SECURITY: User-based rate limiting (1000 requests/hour per user)
     // Also prevents authenticated users from overwhelming the server
-    await userRateLimiter(request, userId);
+    // Cast to NextRequest for rate limiter
+    const nextReq = request instanceof NextRequest ? request : (request as NextRequest);
+    await userRateLimiter(nextReq, userId);
 
     // ========== INPUT PARSING ==========
     let body;

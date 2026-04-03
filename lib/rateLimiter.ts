@@ -91,8 +91,8 @@ export function getClientIp(request: NextRequest): string {
     return realIp;
   }
 
-  // Fallback to connection IP
-  return request.ip || "unknown";
+  // Fallback to "unknown" - NextRequest doesn't expose IP directly
+  return "unknown";
 }
 
 /**
@@ -120,6 +120,7 @@ export function createRateLimiter(config: RateLimitConfig) {
     } = config;
 
     // Create composite key: endpoint + IP + (userId if authenticated)
+    // Use getClientIp function to properly extract IP from proxies
     const ip = getClientIp(request);
     const path = request.nextUrl.pathname;
     const key = userId ? `user:${userId}` : `ip:${ip}:${path}`;

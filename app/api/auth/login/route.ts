@@ -30,10 +30,13 @@ import { logger } from "@/lib/logger";
  * - Account lockout after multiple failed attempts
  * - Email normalization
  */
-export const POST = withErrorHandling(async (request: NextRequest) => {
+export const POST = withErrorHandling(async (request: NextRequest | Request) => {
+  // Cast to NextRequest for rate limiter if needed
+  const nextReq = request instanceof NextRequest ? request : (request as NextRequest);
+  
   // ========== RATE LIMITING ==========
   // Prevent brute force password guessing attacks
-  await strictAuthRateLimiter(request);
+  await strictAuthRateLimiter(nextReq);
 
   // ========== PARSE REQUEST ==========
   let body;
@@ -92,7 +95,8 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
   // This replaces the old base64 comparison
   let passwordMatch: boolean;
   try {
-    passwordMatch = await verifyPassword(password, user.passwordHash);
+    // Use 'password' field from schema (not passwordHash)
+    passwordMatch = await verifyPassword(password, user.password || "");
   } catch (error) {
     logger.error({ error }, "Password verification error");
     recordAuthAttempt(email, false);
@@ -112,8 +116,8 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
   // ========== CREATE TOKEN ==========
   const token = createToken({
     id: user.id,
-    email: user.email,
-    name: user.name,
+    email: user.email || "",
+    name: user.name || "",
   });
 
   // ========== LOG AUTH EVENT ==========
@@ -130,9 +134,9 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
         message: "Logged in successfully",
         user: sanitizeUserForResponse({
           id: user.id,
-          email: user.email,
-          name: user.name,
-          passwordHash: user.passwordHash,
+          email: user.email || "",
+          name: user.name || "",
+          passwordHash: user.password || "",
         }),
       },
     },

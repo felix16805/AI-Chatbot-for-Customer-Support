@@ -30,10 +30,13 @@ import { logger } from "@/lib/logger";
  * - Account lockout after multiple failed attempts
  * - Email normalization
  */
-export const POST = withErrorHandling(async (request: NextRequest) => {
+export const POST = withErrorHandling(async (request: NextRequest | Request) => {
+  // Cast to NextRequest for rate limiter if needed
+  const nextReq = request instanceof NextRequest ? request : (request as NextRequest);
+  
   // ========== RATE LIMITING ==========
   // Prevent brute force attacks on signup endpoint
-  await strictAuthRateLimiter(request);
+  await strictAuthRateLimiter(nextReq);
 
   // ========== PARSE REQUEST ==========
   let body;
@@ -101,7 +104,7 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
       data: {
         email,
         name,
-        passwordHash, // Use bcrypt hash, not base64
+        password: passwordHash, // Use 'password' field (not passwordHash)
       },
     });
 
@@ -109,7 +112,11 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
     recordAuthAttempt(email, true);
 
     // ========== CREATE TOKEN ==========
-    const token = createToken({ id: user.id, email: user.email, name: user.name });
+    const token = createToken({ 
+      id: user.id, 
+      email: user.email || "", 
+      name: user.name || "" 
+    });
 
     // ========== LOG SIGNUP EVENT ==========
     logger.info({ userId: user.id, email }, "User signed up successfully");
@@ -122,9 +129,9 @@ export const POST = withErrorHandling(async (request: NextRequest) => {
           message: "Account created successfully",
           user: sanitizeUserForResponse({
             id: user.id,
-            email: user.email,
-            name: user.name,
-            passwordHash,
+            email: user.email || "",
+            name: user.name || "",
+            passwordHash: passwordHash,
           }),
         },
       },
