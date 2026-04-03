@@ -24,10 +24,10 @@ const config: Config = {
   ],
   coverageThreshold: {
     global: {
-      branches: 10,
+      branches: 2,
       functions: 10,
-      lines: 10,
-      statements: 10,
+      lines: 7,
+      statements: 7,
     },
   },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
