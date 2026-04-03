@@ -32,6 +32,10 @@ const config: Config = {
     'lib/cache.ts',
     'lib/auth.ts',
     'lib/auth-config.ts',
+    'lib/apiKeyManager.ts',
+    'lib/authSecure.ts',
+    'lib/rateLimiter.ts',
+    'lib/sanitization.ts',
   ],
   coverageThreshold: {
     global: {
