@@ -16,7 +16,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:15
+        image: postgres:15-alpine
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
@@ -27,6 +27,7 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+          --cap-add SYS_NICE
         ports:
           - 5432:5432
 
@@ -42,10 +43,15 @@ jobs:
 
       - name: Wait for PostgreSQL
         run: |
-          until pg_isready -h localhost -p 5432 -U postgres; do
-            echo 'Waiting for PostgreSQL...'
-            sleep 1
+          for i in {1..30}; do
+            if pg_isready -h localhost -p 5432 -U postgres; then
+              echo "PostgreSQL is ready!"
+              exit 0
+            fi
+            echo "Attempt $i: Waiting for PostgreSQL..."
+            sleep 2
           done
+          exit 1
         env:
           PGPASSWORD: postgres
 
@@ -81,24 +87,27 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            // Parse coverage data if available
-            const coverage = JSON.parse(fs.readFileSync('./coverage/coverage-summary.json', 'utf8'));
-            const total = coverage.total;
-            
-            const comment = `## Test Results ✅
-            
-            | Metric | Coverage |
-            |--------|----------|
-            | Statements | ${total.statements.pct}% |
-            | Branches | ${total.branches.pct}% |
-            | Functions | ${total.functions.pct}% |
-            | Lines | ${total.lines.pct}% |
-            
-            Tests completed successfully on Node ${{ matrix.node-version }}.`;
-            
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: comment
-            });
+            try {
+              const coverage = JSON.parse(fs.readFileSync('./coverage/coverage-summary.json', 'utf8'));
+              const total = coverage.total;
+              
+              const comment = `## Test Results ✅
+              
+              | Metric | Coverage |
+              |--------|----------|
+              | Statements | ${total.statements.pct}% |
+              | Branches | ${total.branches.pct}% |
+              | Functions | ${total.functions.pct}% |
+              | Lines | ${total.lines.pct}% |
+              
+              Tests completed successfully on Node ${{ matrix.node-version }}.`;
+              
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+            } catch (error) {
+              console.log('Could not post comment:', error.message);
+            }
