@@ -2,8 +2,11 @@
 
 import React from "react";
 import Link from "next/link";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function ProductOverview() {
+  const { isAuthenticated } = useAuth();
+  const chatLabel = isAuthenticated ? "Live Chat" : "Live Demo";
   return (
     <div style={{ width: "100%" }}>
       {/* Hero Section */}
@@ -354,7 +357,7 @@ export default function ProductOverview() {
                 (e.currentTarget as HTMLElement).style.boxShadow = "0 12px 32px rgba(255,107,107,0.3)";
               }}
             >
-              Try Live Demo →
+              Try {chatLabel} →
             </button>
           </Link>
           <Link href="/features">

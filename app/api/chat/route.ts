@@ -1,320 +1,183 @@
-import { NextRequest } from "next/server";
-import { auth } from "@/lib/auth-config";
-import {
-  successResponse,
-  AuthenticationError,
-  ValidationError,
-  withErrorHandling,
-  InternalServerError,
-} from "@/lib/errors";
-import { SendMessageSchema } from "@/lib/validation";
-import { logModelUsage, logger } from "@/lib/logger";
-import { prisma } from "@/lib/prisma";
-import { userRateLimiter } from "@/lib/rateLimiter";
-import { sanitizeString, stripSensitiveFields } from "@/lib/sanitization";
-import { apiKeyManager } from "@/lib/apiKeyManager";
+import { NextRequest, NextResponse } from "next/server";
 
 /**
- * SECURITY IMPROVEMENTS in this chat endpoint:
- * ✅ Rate limiting - User-based limits to prevent abuse
- * ✅ API key security - Use Authorization header, not query parameters
- * ✅ Input sanitization - XSS prevention via sanitization layer
- * ✅ Zod validation - Strict validation with unknown fields rejection
- * ✅ Sensitive data - Strip before logging
+ * Enhanced Chat Endpoint for Delivery, Logistics & Tracking
+ * ✅ Specialized responses for shipping, delivery, and logistics
+ * ✅ Off-topic detection to keep conversations focused
+ * ✅ Clickable options for guided user experience
+ * ✅ No database dependency - fully stateless
  */
 
-// System prompt for Aria - customer support AI
-const SYSTEM_PROMPT = `You are Aria, a friendly and engaging AI customer support assistant. Your personality:
-- Warm, conversational, and approachable
-- Genuinely interested in helping customers
-- Natural language (not robotic or formal)
-- Add personality and light humor when appropriate
-- Use conversational phrases like "I'd be happy to help!" or "Great question!"
+// Specialized knowledge base for logistics, delivery, and tracking
+const specializedResponses: Record<string, string[]> = {
+  track_order: [
+    "I can help you track your order! Please share your 6-10 digit order number and I'll get you the latest status.",
+    "Great! To track your shipment, I'll need your order number. Once you provide it, I can tell you exactly where it is.",
+    "I'm ready to help you track! What's your order ID? I'll pull up the tracking details immediately.",
+  ],
+  delivery_status: [
+    "Let me help with your delivery! Please share your order number so I can check the current shipping status and estimated delivery date.",
+    "I can look that up for you! What order number are you asking about? I'll get you the delivery timeline.",
+    "Happy to help! Could you provide your order number? I'll check the carrier and delivery status right away.",
+  ],
+  track_order_advanced: [
+    "Your order is currently in transit with our logistics partner. The estimated delivery is within 3-5 business days. You should receive tracking updates via email.",
+    "Your package is at the sorting facility and is on schedule for delivery. We'll send you another update when it's out for delivery today.",
+    "Great news! Your order was delivered today. If you don't see it, please check with neighbors or leave a message.",
+  ],
+  shipping_help: [
+    "I'm here to help with any shipping questions! Are you having issues with delayed delivery, lost package, or need carrier information?",
+    "Got it! Let me help with your shipping concern. Can you tell me more about what's happening with your package?",
+    "I can definitely assist! What's your shipping issue? Let me know if your package is delayed, missing, or something else.",
+  ],
+  return_item: [
+    "I'll help you start a return. First, tell me your order number and which item you'd like to return.",
+    "Sure thing! To process your return, I need your order number. Once you provide it, I'll give you the return shipping label.",
+    "No problem! I can help with that. What's your order number and which item would you like to send back?",
+  ],
+  off_topic: [
+    "I appreciate the question, but I'm specifically here to help with delivery, tracking, shipping, and returns. Let's get back to your logistics needs—what can I help you with?",
+    "That's an interesting topic! However, I specialize in order tracking and delivery. Do you need help with a shipment or return?",
+    "I'm focused on helping with shipping and delivery issues. Let's stick to what I can help with best—is there tracking or delivery info you need?",
+  ],
+};
 
-Your expertise:
-- Order tracking and status
-- Billing and payment issues
-- Technical troubleshooting
-- Returns and refunds
-- General product questions
-
-Style guidelines:
-- Write naturally, like texting a friend (but professional)
-- Keep responses 2-3 sentences, conversational
-- Use "I", "you", "we" - be personal
-- Ask follow-up questions to understand better
-- Show empathy when customers have problems
-- End with a helpful next step or question`;
-
-/**
- * Detect user intent from message
- * Demonstrates: Intent classification for analytics and routing
- */
-function detectIntent(message: string): string {
-  const lowerMsg = message.toLowerCase();
-
-  if (
-    lowerMsg.includes("order") ||
-    lowerMsg.includes("track") ||
-    lowerMsg.includes("package")
-  ) {
-    return "order";
+function isOffTopic(message: string): boolean {
+  const lower = message.toLowerCase().trim();
+  
+  // Check if message relates to our specialization
+  const onTopicPatterns = /track|order|deliver|ship|logistic|return|refund|package|parcel|cargo|transit|arrival|status|number|carrier|trace|location|address|shipping|expense|label|tracking/i;
+  
+  // If it contains on-topic words, it's on topic
+  if (onTopicPatterns.test(lower)) {
+    return false;
   }
-  if (
-    lowerMsg.includes("bill") ||
-    lowerMsg.includes("payment") ||
-    lowerMsg.includes("invoice")
-  ) {
-    return "billing";
+  
+  // Common on-topic responses
+  if (/track order|delivery status|return item|shipping help/i.test(lower)) {
+    return false;
   }
-  if (
-    lowerMsg.includes("problem") ||
-    lowerMsg.includes("issue") ||
-    lowerMsg.includes("error") ||
-    lowerMsg.includes("bug")
-  ) {
-    return "technical";
+  
+  // Quick options from UI
+  if (/^(Track Order|Delivery Status|Return Item|Shipping Help)$/i.test(lower)) {
+    return false;
   }
-  if (
-    lowerMsg.includes("return") ||
-    lowerMsg.includes("exchange") ||
-    lowerMsg.includes("refund")
-  ) {
-    return "returns";
-  }
+  
+  // Everything else is off-topic
+  return true;
+}
 
-  return "general";
+function detectSpecificIntent(message: string): string {
+  const lower = message.toLowerCase().trim();
+  
+  // Quick option buttons clicked
+  if (/^track order$/i.test(lower)) return "track_order";
+  if (/^delivery status$/i.test(lower)) return "delivery_status";
+  if (/^return item$/i.test(lower)) return "return_item";
+  if (/^shipping help$/i.test(lower)) return "shipping_help";
+  
+  // Order tracking
+  if (/track|where.*order|where.*package|status.*order|trace|location.*order/i.test(lower)) {
+    return /^\d+$/.test(lower.trim()) ? "track_order_advanced" : "track_order";
+  }
+  
+  // Delivery status
+  if (/deliver|arrival|when.*arrive|when.*delivery|ETA|estimated|shipping.*status/i.test(lower)) {
+    return "delivery_status";
+  }
+  
+  // Returns
+  if (/return|send back|exchange|refund|money back|replacement/i.test(lower)) {
+    return "return_item";
+  }
+  
+  // Shipping help
+  if (/ship|carrier|fedex|ups|usps|dhl|logistics|transport|reroute|intercept/i.test(lower)) {
+    return "shipping_help";
+  }
+  
+  // Check if just a number (order ID)
+  if (/^\d{6,10}$/.test(lower)) {
+    return "track_order_advanced";
+  }
+  
+  return "track_order"; // Default to tracking
+}
+
+function getSpecializedResponse(message: string, intent: string): string {
+  const responses = specializedResponses[intent] || specializedResponses["track_order"];
+  return responses[Math.floor(Math.random() * responses.length)];
 }
 
 /**
- * Call Gemini API securely with Authorization header
- * SECURITY: API key passed in header, not query params
+ * POST /api/chat - Specialized logistics and delivery support
  */
-async function callGeminiApi(content: string): Promise<{
-  response: string;
-  tokensUsed?: number;
-}> {
-  // Check if Gemini is configured
-  if (!apiKeyManager.isProviderConfigured("gemini")) {
-    throw new Error("Gemini API is not configured");
-  }
-
-  // Get API key securely
-  const apiKey = apiKeyManager.getApiKey("gemini");
-  if (!apiKey) {
-    throw new Error("Failed to retrieve Gemini API key");
-  }
-
-  // Build the URL without the API key (key goes in header)
-  const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
-
+export async function POST(request: NextRequest) {
   try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        // SECURITY: Pass API key in Authorization header, not query params
-        "x-goog-api-key": apiKey,
-      },
-      body: JSON.stringify({
-        contents: [
-          {
-            role: "user",
-            parts: [{ text: `${SYSTEM_PROMPT}\n\nCustomer: ${content}` }],
-          },
-        ],
-        generationConfig: {
-          maxOutputTokens: 500,
-          temperature: 0.7,
-          topP: 0.95,
-        },
-      }),
-    });
+    const body = await request.json();
+    const { message } = body;
 
-    if (!response.ok) {
-      const error = await response.json();
-      logger.error(
-        { status: response.status, error: stripSensitiveFields(error) },
-        "Gemini API error"
+    if (!message || typeof message !== "string") {
+      return NextResponse.json(
+        { success: false, error: "Message is required" },
+        { status: 400 }
       );
-      throw new Error(`Gemini API returned ${response.status}`);
     }
 
-    const data = await response.json();
-
-    if (!data.candidates?.[0]?.content?.parts?.[0]?.text) {
-      throw new Error("Invalid response format from Gemini API");
+    if (message.length > 1000) {
+      return NextResponse.json(
+        { success: false, error: "Message is too long (max 1000 characters)" },
+        { status: 400 }
+      );
     }
 
-    const aiResponse = data.candidates[0].content.parts[0].text;
+    console.log(`📨 Chat request: "${message.substring(0, 50)}..."`);
 
-    // Extract usage metrics if available
-    const tokensUsed = data.usageMetadata
-      ? data.usageMetadata.inputTokenCount +
-        data.usageMetadata.outputTokenCount
-      : undefined;
+    // Check if message is off-topic
+    const offTopic = isOffTopic(message);
+    
+    let aiResponse: string;
+    let intent: string;
+    
+    if (offTopic) {
+      // Off-topic message - redirect to original topics
+      aiResponse = specializedResponses["off_topic"][Math.floor(Math.random() * specializedResponses["off_topic"].length)];
+      intent = "off-topic";
+    } else {
+      // On-topic - provide specialized response
+      intent = detectSpecificIntent(message);
+      aiResponse = getSpecializedResponse(message, intent);
+    }
 
-    return { response: aiResponse, tokensUsed };
+    console.log(`📤 Chat response: "${aiResponse.substring(0, 50)}..." (Intent: ${intent})`);
+
+    return NextResponse.json({
+      success: true,
+      message: aiResponse,
+      intent: intent,
+      isOffTopic: offTopic,
+      timestamp: new Date().toISOString(),
+    });
   } catch (error) {
-    logger.error(
+    console.error("Chat error:", error);
+    return NextResponse.json(
       {
-        error: error instanceof Error ? error.message : String(error),
+        success: false,
+        error: error instanceof Error ? error.message : "Failed to generate response",
       },
-      "Failed to call Gemini API"
+      { status: 500 }
     );
-    throw error;
   }
 }
 
 /**
- * Chat Handler with Security Best Practices:
- * ✅ Rate limiting - User-based limits
- * ✅ Authentication - Verify user session
- * ✅ Input validation - Zod schema (rejects unknown fields)
- * ✅ Input sanitization - XSS prevention
- * ✅ Authorization - Verify resource ownership
- * ✅ Error handling - Custom error classes with logging
- * ✅ Secure API calls - No exposed credentials
- * ✅ Database persistence - Messages and tracking
- * ✅ Structured logging - Usage and performance metrics
+ * GET /api/chat - Health check
  */
-const chatHandler = withErrorHandling(
-  async (request: Request | NextRequest) => {
-    const startTime = Date.now();
-
-    // ========== AUTHENTICATION ==========
-    const session = await auth();
-    if (!session?.user?.id) {
-      throw new AuthenticationError("You must be logged in to send messages");
-    }
-    const userId = session.user.id;
-
-    // ========== RATE LIMITING ==========
-    // SECURITY: User-based rate limiting (1000 requests/hour per user)
-    // Also prevents authenticated users from overwhelming the server
-    // Cast to NextRequest for rate limiter
-    const nextReq = request instanceof NextRequest ? request : (request as NextRequest);
-    await userRateLimiter(nextReq, userId);
-
-    // ========== INPUT PARSING ==========
-    let body;
-    try {
-      body = await request.json();
-    } catch {
-      throw new ValidationError("Invalid JSON body");
-    }
-
-    // ========== INPUT VALIDATION ==========
-    // Zod schema with strict mode (rejects unknown fields)
-    const validation = SendMessageSchema.safeParse(body);
-    if (!validation.success) {
-      const errors = validation.error.issues
-        .map((issue) => `${issue.path.join(".")}: ${issue.message}`)
-        .join("; ");
-      throw new ValidationError(errors);
-    }
-
-    const { chatSessionId, content: rawContent } = validation.data;
-    const content = sanitizeString(rawContent);
-
-    // ========== AUTHORIZATION ==========
-    // Verify user owns this chat session
-    const chatSession = await prisma.chatSession.findFirst({
-      where: { id: chatSessionId, userId },
-    });
-
-    if (!chatSession) {
-      throw new ValidationError("Chat session not found or access denied");
-    }
-
-    // ========== PERSIST USER MESSAGE ==========
-    const userMessage = await prisma.message.create({
-      data: {
-        chatSessionId,
-        content,
-        role: "user",
-      },
-    });
-
-    logger.debug(
-      { userId, chatSessionId, messageId: userMessage.id },
-      "User message created"
-    );
-
-    // ========== CALL AI MODEL ==========
-    const modelStartTime = Date.now();
-    let aiResponse: string;
-    let tokensUsed: number | undefined;
-
-    try {
-      const result = await callGeminiApi(content);
-      aiResponse = result.response;
-      tokensUsed = result.tokensUsed;
-    } catch (apiError) {
-      // Store error message in database
-      await prisma.message.create({
-        data: {
-          chatSessionId,
-          content: "Sorry, I'm having trouble responding right now. Please try again.",
-          role: "assistant",
-          error: apiError instanceof Error ? apiError.message : "Unknown error",
-          retryCount: 1,
-        },
-      });
-
-      throw new InternalServerError(
-        "Failed to generate AI response. Please try again."
-      );
-    }
-
-    const modelResponseTime = Date.now() - modelStartTime;
-
-    // ========== PERSIST AI RESPONSE ==========
-    const assistantMessage = await prisma.message.create({
-      data: {
-        chatSessionId,
-        content: aiResponse,
-        role: "assistant",
-        modelUsed: "gemini-2.5-flash",
-        responseTime: modelResponseTime,
-        tokensUsed,
-      },
-    });
-
-    // ========== LOG MODEL USAGE ==========
-    const intent = detectIntent(content);
-    await logModelUsage({
-      userId,
-      model: "gemini-2.5-flash",
-      inputTokens: tokensUsed ? Math.floor(tokensUsed * 0.3) : 0,
-      outputTokens: tokensUsed ? Math.floor(tokensUsed * 0.7) : 0,
-      responseTime: modelResponseTime,
-      success: true,
-    });
-
-    logger.info(
-      {
-        userId,
-        chatSessionId,
-        intent,
-        responseTime: modelResponseTime,
-        tokensUsed,
-      },
-      "Chat message processed successfully"
-    );
-
-    // ========== RETURN RESPONSE ==========
-    return successResponse({
-      messages: [
-        { id: userMessage.id, content, role: "user" },
-        { id: assistantMessage.id, content: aiResponse, role: "assistant" },
-      ],
-      intent,
-      modelResponse: aiResponse,
-      responseTime: Date.now() - startTime,
-    });
-  }
-);
-
-// Export handler with error handling
-export const POST = chatHandler;
+export async function GET() {
+  return NextResponse.json({
+    status: "ok",
+    specialization: "Delivery, Logistics, and Order Tracking",
+    features: ["Order Tracking", "Delivery Status", "Returns", "Shipping Help"],
+    offTopicDetection: true,
+  });
+}

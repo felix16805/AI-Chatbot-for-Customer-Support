@@ -1,18 +1,26 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { Send, Bot, User, Zap, Brain, Shield } from "lucide-react";
+import { Send, Bot, User, Zap, Brain, Shield, Package, Truck, RotateCcw, HelpCircle } from "lucide-react";
 
 interface Message {
   id: number;
   role: "user" | "assistant";
   content: string;
   intent?: string;
+  showOptions?: boolean;
 }
+
+const quickOptions = [
+  { label: "Track Order", icon: Package, color: "#FF6B6B" },
+  { label: "Delivery Status", icon: Truck, color: "#FFB347" },
+  { label: "Return Item", icon: RotateCcw, color: "#2DD4BF" },
+  { label: "Shipping Help", icon: HelpCircle, color: "#A855F7" },
+];
 
 export default function ChatWindow() {
   const [messages, setMessages] = useState<Message[]>([
-    { id: 1, role: "assistant", content: "Hi! I'm Aria, your AI customer support assistant. I can help you with orders, tracking, billing, technical issues, and more. What can I help you with today?" },
+    { id: 1, role: "assistant", content: "Hi! I'm Aria, your AI customer support assistant. I specialize in delivery, logistics, and order tracking. What can I help you with today?", showOptions: true },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -30,6 +38,42 @@ export default function ChatWindow() {
     scrollToBottom();
   }, [messages]);
 
+  const handleQuickOption = (option: string) => {
+    setInput("");
+    setMessages(prev => [...prev, { id: Date.now(), role: "user", content: option }]);
+    setLoading(true);
+    
+    setTimeout(async () => {
+      try {
+        const response = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: option }),
+        });
+
+        if (!response.ok) throw new Error("Failed to get response");
+
+        const data = await response.json();
+        setMessages(prev => [...prev, { 
+          id: Date.now() + 1, 
+          role: "assistant", 
+          content: data.message,
+          intent: data.intent,
+          showOptions: !data.isOffTopic
+        }]);
+      } catch (_error) {
+        setMessages(prev => [...prev, { 
+          id: Date.now() + 1, 
+          role: "assistant", 
+          content: "Sorry, I encountered an error. Please try again.",
+          showOptions: true
+        }]);
+      } finally {
+        setLoading(false);
+      }
+    }, 300);
+  };
+
   const handleSend = async () => {
     if (!input.trim() || loading) return;
 
@@ -45,23 +89,25 @@ export default function ChatWindow() {
         body: JSON.stringify({ message: userMessage }),
       });
 
-      if (!response.ok) throw new Error("Failed to get response");
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to get response");
+      }
 
       const data = await response.json();
       setMessages(prev => [...prev, { 
         id: Date.now() + 1, 
         role: "assistant", 
         content: data.message,
-        intent: data.intent
+        intent: data.intent,
+        showOptions: !data.isOffTopic
       }]);
-    } catch (
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      _error
-    ) {
+    } catch (_error) {
       setMessages(prev => [...prev, { 
         id: Date.now() + 1, 
         role: "assistant", 
-        content: "Sorry, I encountered an error. Please try again." 
+        content: "Sorry, I encountered an error. Please try again.",
+        showOptions: true
       }]);
     } finally {
       setLoading(false);
@@ -301,48 +347,96 @@ export default function ChatWindow() {
         minHeight: 0,
       }}>
         {messages.map((msg) => (
-          <div key={msg.id} style={{ display: "flex", justifyContent: msg.role === "user" ? "flex-end" : "flex-start", animation: "fadeIn 0.3s ease-out" }}>
-            <div style={{ maxWidth: "70%", display: "flex", gap: 14, flexDirection: msg.role === "user" ? "row-reverse" : "row" }}>
-              <div style={{
-                width: 40,
-                height: 40,
-                borderRadius: "50%",
-                background: msg.role === "user"
-                  ? "linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05))"
-                  : "linear-gradient(135deg, rgba(255,107,107,0.2), rgba(255,179,71,0.1))",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-                border: msg.role === "user" ? "1.5px solid rgba(255,255,255,0.15)" : "1.5px solid rgba(255,107,107,0.2)",
-              }}>
-                {msg.role === "user" ? <User size={18} color="white" /> : <Bot size={18} color="#FF6B6B" />}
-              </div>
-              <div>
+          <div key={msg.id}>
+            <div style={{ display: "flex", justifyContent: msg.role === "user" ? "flex-end" : "flex-start", animation: "fadeIn 0.3s ease-out" }}>
+              <div style={{ maxWidth: "70%", display: "flex", gap: 14, flexDirection: msg.role === "user" ? "row-reverse" : "row" }}>
                 <div style={{
-                  padding: msg.role === "user" ? "12px 18px" : "14px 20px",
-                  borderRadius: "16px",
-                  fontSize: "0.95rem",
-                  lineHeight: 1.6,
-                  color: msg.role === "user" ? "white" : "rgba(255,255,255,0.85)",
+                  width: 40,
+                  height: 40,
+                  borderRadius: "50%",
                   background: msg.role === "user"
-                    ? "linear-gradient(135deg, #FF6B6B, #FFB347)"
-                    : "rgba(255,255,255,0.06)",
-                  border: msg.role === "user" ? "1px solid rgba(255,255,255,0.1)" : "1.5px solid rgba(255,255,255,0.12)",
-                  borderTopLeftRadius: msg.role === "assistant" ? 4 : 16,
-                  borderTopRightRadius: msg.role === "user" ? 4 : 16,
-                  backdropFilter: "blur(10px)",
-                  boxShadow: msg.role === "user" ? "0 8px 24px rgba(255,107,107,0.2)" : "0 4px 16px rgba(0,0,0,0.2)",
+                    ? "linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05))"
+                    : "linear-gradient(135deg, rgba(255,107,107,0.2), rgba(255,179,71,0.1))",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                  border: msg.role === "user" ? "1.5px solid rgba(255,255,255,0.15)" : "1.5px solid rgba(255,107,107,0.2)",
                 }}>
-                  {msg.content}
+                  {msg.role === "user" ? <User size={18} color="white" /> : <Bot size={18} color="#FF6B6B" />}
                 </div>
-                {msg.intent && (
-                  <div style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.4)", marginTop: 8, paddingLeft: 4 }}>
-                    <span style={{ color: "#2DD4BF" }}>Intent:</span> {msg.intent}
+                <div>
+                  <div style={{
+                    padding: msg.role === "user" ? "12px 18px" : "14px 20px",
+                    borderRadius: "16px",
+                    fontSize: "0.95rem",
+                    lineHeight: 1.6,
+                    color: msg.role === "user" ? "white" : "rgba(255,255,255,0.85)",
+                    background: msg.role === "user"
+                      ? "linear-gradient(135deg, #FF6B6B, #FFB347)"
+                      : "rgba(255,255,255,0.06)",
+                    border: msg.role === "user" ? "1px solid rgba(255,255,255,0.1)" : "1.5px solid rgba(255,255,255,0.12)",
+                    borderTopLeftRadius: msg.role === "assistant" ? 4 : 16,
+                    borderTopRightRadius: msg.role === "user" ? 4 : 16,
+                    backdropFilter: "blur(10px)",
+                    boxShadow: msg.role === "user" ? "0 8px 24px rgba(255,107,107,0.2)" : "0 4px 16px rgba(0,0,0,0.2)",
+                  }}>
+                    {msg.content}
                   </div>
-                )}
+                  {msg.intent && (
+                    <div style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.4)", marginTop: 8, paddingLeft: 4 }}>
+                      <span style={{ color: "#2DD4BF" }}>Intent:</span> {msg.intent}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
+            
+            {/* Show Quick Options after bot messages */}
+            {msg.role === "assistant" && msg.showOptions && (
+              <div style={{ display: "flex", gap: 12, marginTop: 16, flexWrap: "wrap", justifyContent: "flex-start", paddingLeft: 54 }}>
+                {quickOptions.map((option) => {
+                  const IconComponent = option.icon;
+                  return (
+                    <button
+                      key={option.label}
+                      onClick={() => handleQuickOption(option.label)}
+                      disabled={loading}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 8,
+                        padding: "10px 16px",
+                        borderRadius: "10px",
+                        background: "rgba(255,255,255,0.05)",
+                        border: `1.5px solid ${option.color}40`,
+                        color: option.color,
+                        cursor: loading ? "not-allowed" : "pointer",
+                        fontWeight: 600,
+                        fontSize: "0.85rem",
+                        transition: "all 0.25s",
+                        opacity: loading ? 0.5 : 1,
+                      }}
+                      onMouseEnter={(e) => {
+                        if (!loading) {
+                          (e.currentTarget as HTMLElement).style.background = `${option.color}15`;
+                          (e.currentTarget as HTMLElement).style.borderColor = option.color;
+                          (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)";
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.05)";
+                        (e.currentTarget as HTMLElement).style.borderColor = `${option.color}40`;
+                        (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
+                      }}
+                    >
+                      <IconComponent size={16} />
+                      {option.label}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
         ))}
 

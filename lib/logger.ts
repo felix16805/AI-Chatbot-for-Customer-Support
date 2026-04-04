@@ -52,8 +52,8 @@ export async function logApiRequest(options: {
     `${method} ${path} - ${statusCode} (${responseTime}ms)`
   );
 
-  // Store error in database for later analysis
-  if (error) {
+  // Store error in database for later analysis (if available)
+  if (error && process.env.NODE_ENV === "production") {
     try {
       await prisma.errorLog.create({
         data: {
@@ -67,7 +67,10 @@ export async function logApiRequest(options: {
         },
       });
     } catch (dbError) {
-      logger.error(dbError, "Failed to log error to database");
+      // Silently fail in case database is unavailable
+      if (process.env.DEBUG_DB_ERRORS) {
+        logger.error(dbError, "Failed to log error to database");
+      }
     }
   }
 }

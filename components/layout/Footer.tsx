@@ -1,6 +1,12 @@
+"use client";
+
 import Link from "next/link";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Footer() {
+  const { isAuthenticated } = useAuth();
+  const chatLabel = isAuthenticated ? "Live Chat" : "Live Demo";
+
   return (
     <footer style={{ borderTop: "1px solid var(--gb)", padding: "56px 56px 32px" }}>
       <div style={{ maxWidth: 1200, margin: "0 auto" }}>
@@ -21,7 +27,7 @@ export default function Footer() {
 
           {/* Links */}
           {[
-            { title: "Product", links: [{ label: "Features", href: "/features" }, { label: "Live Demo", href: "/chat" }, { label: "Pricing", href: "/pricing" }, { label: "Changelog", href: "/changelog" }] },
+            { title: "Product", links: [{ label: "Features", href: "/features" }, { label: chatLabel, href: "/chat" }, { label: "Pricing", href: "/pricing" }, { label: "Changelog", href: "/changelog" }] },
             { title: "Resources", links: [{ label: "Documentation", href: "#" }, { label: "API Reference", href: "#" }, { label: "Blog", href: "#" }, { label: "Status", href: "#" }] },
             { title: "Company", links: [{ label: "About", href: "#" }, { label: "Careers", href: "#" }, { label: "Privacy", href: "#" }, { label: "Terms", href: "#" }] },
           ].map((col) => (

@@ -2,8 +2,11 @@
 
 import { ArrowRight, CheckCircle, Zap, Users, BarChart3, Lock, Smartphone } from "lucide-react";
 import Link from "next/link";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function FeaturesPage() {
+  const { isAuthenticated } = useAuth();
+  const chatLabel = isAuthenticated ? "Live Chat" : "Live Demo";
   const mainFeatures = [
     { icon: Zap, title: "Lightning-Fast Responses", description: "AI-powered responses that resolve 94% of queries instantly, with average response time under 2.3 seconds.", benefits: ["Sub-second latency", "Real-time processing", "99.9% uptime"], },
     { icon: Users, title: "Human Touch When Needed", description: "Seamlessly escalate complex issues to human agents. AI identifies when human intervention is needed.", benefits: ["Smart escalation", "Context preservation", "Warm handoff"], },
@@ -127,7 +130,7 @@ export default function FeaturesPage() {
                 <ArrowRight size={18} />
               </Link>
               <Link href="/chat" style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", color: "white", padding: "14px 32px", borderRadius: 14, fontFamily: "'DM Sans', sans-serif", fontSize: "1rem", fontWeight: 600, textDecoration: "none", transition: "all 0.25s", cursor: "pointer" }} onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.15)")} onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.1)")}>
-                Try Live Demo
+                Try {chatLabel}
               </Link>
             </div>
           </div>

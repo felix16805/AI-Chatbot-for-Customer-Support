@@ -17,14 +17,14 @@ type NavLink = {
   submenu?: NavSubLink[];
 };
 
-const navLinks: NavLink[] = [
+// Base nav links without the chat link
+const baseNavLinks: NavLink[] = [
   { href: "/", label: "Home" },
   { 
     href: "/product",
     label: "Product", 
     submenu: [
       { href: "/features", label: "Features" },
-      { href: "/chat", label: "Live Demo" },
       { href: "/pricing", label: "Pricing" },
       { href: "/changelog", label: "Changelog" },
     ]
@@ -38,6 +38,18 @@ export default function Navbar() {
   const [showDropdown, setShowDropdown] = useState(false);
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
   const submenuRef = useRef<HTMLLIElement>(null);
+
+  // Dynamically build nav links based on auth status
+  const navLinks: NavLink[] = [
+    ...baseNavLinks.map(link => ({
+      ...link,
+      submenu: link.submenu ? [
+        ...link.submenu.slice(0, 1), // Features
+        { href: "/chat", label: isAuthenticated ? "Live Chat" : "Live Demo" },
+        ...link.submenu.slice(1), // Pricing, Changelog
+      ] : undefined
+    }))
+  ];
 
   useEffect(() => {
     const handleScroll = () => {

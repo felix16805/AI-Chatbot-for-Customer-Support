@@ -1,7 +1,12 @@
+"use client";
+
 import FeaturesGrid from "@/components/features/FeaturesGrid";
 import Link from "next/link";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function FeaturesPage() {
+  const { isAuthenticated } = useAuth();
+  const chatLabel = isAuthenticated ? "Live Chat" : "Live Demo";
   return (
     <div className="flex flex-col gap-16 pb-16">
       {/* Header Section */}
@@ -296,7 +301,7 @@ export default function FeaturesPage() {
                 (e.currentTarget as HTMLElement).style.boxShadow = "0 12px 32px rgba(255,107,107,0.3)";
               }}
             >
-              Try Live Demo →
+              Try {chatLabel} →
             </button>
           </Link>
           <Link href="/product">

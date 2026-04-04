@@ -2,8 +2,11 @@
 
 import React from "react";
 import Link from "next/link";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function HeroSection() {
+  const { isAuthenticated } = useAuth();
+  const chatLabel = isAuthenticated ? "Live Chat" : "Live Demo";
   return (
     <section
       style={{
@@ -72,7 +75,7 @@ export default function HeroSection() {
                 transition: "all 0.25s",
               }}
             >
-              Launch Live Demo →
+              Launch {chatLabel} →
             </button>
           </Link>
           <Link href="/features">
