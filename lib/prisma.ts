@@ -10,17 +10,22 @@ import { PrismaClient } from "./generated/prisma/client";
 const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
 
 const databaseUrl = process.env.DATABASE_URL;
-if (!databaseUrl) {
-  throw new Error("DATABASE_URL is not set");
+
+// Allow build-time execution without DATABASE_URL
+// Return undefined if not available, error will occur at runtime if actually used
+let prismaInstance: PrismaClient | undefined;
+
+if (databaseUrl) {
+  prismaInstance =
+    globalForPrisma.prisma ??
+    new PrismaClient({
+      accelerateUrl: databaseUrl,
+      log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
+    });
+
+  if (process.env.NODE_ENV !== "production") {
+    globalForPrisma.prisma = prismaInstance;
+  }
 }
 
-export const prisma =
-  globalForPrisma.prisma ??
-  new PrismaClient({
-    accelerateUrl: databaseUrl,
-    log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
-  });
-
-if (process.env.NODE_ENV !== "production") {
-  globalForPrisma.prisma = prisma;
-}
+export const prisma = prismaInstance as PrismaClient;
