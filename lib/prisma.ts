@@ -1,3 +1,6 @@
+// Load environment variables from .env file
+import "dotenv/config";
+
 // Prisma Client Singleton with Accelerate Support
 // Best Practice: Prevents multiple database connections in development
 // Reference: https://www.prisma.io/docs/guides/other/troubleshooting-orm/help-articles/nextjs-prisma-client-instantiation-issue
