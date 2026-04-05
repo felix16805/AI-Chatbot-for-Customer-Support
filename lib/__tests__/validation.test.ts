@@ -9,7 +9,7 @@ import {
   SignupSchema,
   SendMessageSchema,
   validateInput,
-} from '@/lib/validation';
+} from '../validation';
 
 describe('Validation Schemas', () => {
   describe('LoginSchema', () => {

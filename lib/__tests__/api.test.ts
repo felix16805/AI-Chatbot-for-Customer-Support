@@ -3,16 +3,19 @@
  * Tests for POST /api/chat endpoint with authentication, validation, authorization
  */
 
-import { 
-  validateInput,
+import {
+  LoginSchema,
+  SignupSchema,
   SendMessageSchema,
-  LoginSchema
-} from '@/lib/validation';
-import { 
-  AuthenticationError, 
-  ValidationError, 
-  AuthorizationError
-} from '@/lib/errors';
+  validateInput,
+} from '../validation';
+
+import {
+  AppError,
+  ValidationError,
+  AuthenticationError,
+  AuthorizationError,
+} from '../errors';
 
 // Mock next/headers
 jest.mock('next/headers', () => ({
