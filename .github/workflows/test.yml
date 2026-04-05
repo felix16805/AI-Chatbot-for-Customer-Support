@@ -61,7 +61,7 @@ jobs:
       - name: Generate Prisma client
         run: npx prisma generate
         env:
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
+          DATABASE_URL: prisma+postgres://accelerate.prisma-data.net/?api_key=${{ secrets.PRISMA_ACCELERATE_API_KEY }}
 
       - name: Run linter
         run: npm run lint --if-present
@@ -69,7 +69,7 @@ jobs:
       - name: Run tests
         run: npm test -- --coverage
         env:
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
+          DATABASE_URL: prisma+postgres://accelerate.prisma-data.net/?api_key=${{ secrets.PRISMA_ACCELERATE_API_KEY }}
           NEXTAUTH_SECRET: test-secret-key
           NEXTAUTH_URL: http://localhost:3000
 
