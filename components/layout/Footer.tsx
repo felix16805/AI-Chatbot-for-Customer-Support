@@ -28,8 +28,8 @@ export default function Footer() {
           {/* Links */}
           {[
             { title: "Product", links: [{ label: "Features", href: "/features" }, { label: chatLabel, href: "/chat" }, { label: "Pricing", href: "/pricing" }, { label: "Changelog", href: "/changelog" }] },
-            { title: "Resources", links: [{ label: "Documentation", href: "#" }, { label: "API Reference", href: "#" }, { label: "Blog", href: "#" }, { label: "Status", href: "#" }] },
-            { title: "Company", links: [{ label: "About", href: "#" }, { label: "Careers", href: "#" }, { label: "Privacy", href: "#" }, { label: "Terms", href: "#" }] },
+            { title: "Resources", links: [{ label: "Documentation", href: "/documentation" }, { label: "API Reference", href: "/api-reference" }, { label: "Blog", href: "/blog" }, { label: "FAQs", href: "/faqs" }] },
+            { title: "Company", links: [{ label: "About", href: "/about" }, { label: "Contact", href: "/contact" }, { label: "Privacy", href: "/privacy" }, { label: "Terms", href: "/terms" }] },
           ].map((col) => (
             <div key={col.title}>
               <h4 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: "0.88rem", marginBottom: 16 }}>{col.title}</h4>

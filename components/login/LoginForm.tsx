@@ -73,7 +73,7 @@ export default function LoginForm() {
       <div>
         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
           <label style={{ fontSize: "0.95rem", fontWeight: 500, color: "rgba(255,255,255,0.65)" }}>Password</label>
-          <a href="#" style={{ fontSize: "0.9rem", color: "#FF6B6B", textDecoration: "none", fontWeight: 500 }}>Forgot?</a>
+          <a href="/contact" style={{ fontSize: "0.9rem", color: "#FF6B6B", textDecoration: "none", fontWeight: 500 }}>Forgot?</a>
         </div>
         <div style={{ position: "relative" }}>
           <input 

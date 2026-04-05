@@ -21,12 +21,33 @@ type NavLink = {
 const baseNavLinks: NavLink[] = [
   { href: "/", label: "Home" },
   { 
-    href: "/product",
+    href: "#",
     label: "Product", 
     submenu: [
       { href: "/features", label: "Features" },
+      { href: "/chat", label: "Live Chat" },
       { href: "/pricing", label: "Pricing" },
       { href: "/changelog", label: "Changelog" },
+    ]
+  },
+  {
+    href: "#",
+    label: "Resources",
+    submenu: [
+      { href: "/documentation", label: "Documentation" },
+      { href: "/api-reference", label: "API Reference" },
+      { href: "/blog", label: "Blog" },
+      { href: "/faqs", label: "FAQs" },
+    ]
+  },
+  {
+    href: "#",
+    label: "Company",
+    submenu: [
+      { href: "/about", label: "About" },
+      { href: "/contact", label: "Contact" },
+      { href: "/privacy", label: "Privacy" },
+      { href: "/terms", label: "Terms" },
     ]
   },
 ];
@@ -37,19 +58,10 @@ export default function Navbar() {
   const { isAuthenticated, user, logout, isLoading } = useAuth();
   const [showDropdown, setShowDropdown] = useState(false);
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
-  const submenuRef = useRef<HTMLLIElement>(null);
+  const navRef = useRef<HTMLDivElement>(null);
 
   // Dynamically build nav links based on auth status
-  const navLinks: NavLink[] = [
-    ...baseNavLinks.map(link => ({
-      ...link,
-      submenu: link.submenu ? [
-        ...link.submenu.slice(0, 1), // Features
-        { href: "/chat", label: isAuthenticated ? "Live Chat" : "Live Demo" },
-        ...link.submenu.slice(1), // Pricing, Changelog
-      ] : undefined
-    }))
-  ];
+  const navLinks: NavLink[] = baseNavLinks;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -62,20 +74,15 @@ export default function Navbar() {
   // Handle click outside to close submenu
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (submenuRef.current && !submenuRef.current.contains(e.target as Node)) {
-        // Check if click is outside the product button area
-        const target = e.target as HTMLElement;
-        if (!target.closest('button') || !target.textContent?.includes('Product')) {
-          setOpenSubmenu(null);
-        }
+      if (navRef.current && !navRef.current.contains(e.target as Node)) {
+        setOpenSubmenu(null);
+        setShowDropdown(false);
       }
     };
 
-    if (openSubmenu) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
+    document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [openSubmenu]);
+  }, []);
 
   const handleLogout = async () => {
     await logout();
@@ -84,6 +91,7 @@ export default function Navbar() {
 
   return (
     <nav
+      ref={navRef}
       style={{
         display: "flex",
         alignItems: "center",
@@ -172,7 +180,6 @@ export default function Navbar() {
             <li 
               key={link.label}
               style={{ position: "relative" }}
-              ref={hasSubmenu ? submenuRef : null}
             >
               {hasSubmenu ? (
                 <div>
@@ -338,7 +345,7 @@ export default function Navbar() {
         })}
       </ul>
 
-      {/* Actions */}
+      {/* Search & Tools */}
       <div style={{ 
         display: "flex", 
         gap: 12, 
@@ -401,10 +408,10 @@ export default function Navbar() {
                   <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.85rem", margin: 0 }}>Logged in as</p>
                   <p style={{ color: "white", fontWeight: 600, margin: "4px 0 0 0" }}>{user.email}</p>
                 </div>
-                <Link href="/dashboard">
+                <Link href="/dashboard" style={{ textDecoration: "none", width: "100%" }}>
                   <button style={{
                     width: "100%",
-                    padding: "12px",
+                    padding: "12px 16px",
                     border: "none",
                     background: "transparent",
                     color: "rgba(255,255,255,0.8)",
@@ -422,11 +429,54 @@ export default function Navbar() {
                     Dashboard
                   </button>
                 </Link>
+                <Link href="/account" style={{ textDecoration: "none", width: "100%" }}>
+                  <button style={{
+                    width: "100%",
+                    padding: "12px 16px",
+                    border: "none",
+                    background: "transparent",
+                    color: "rgba(255,255,255,0.8)",
+                    textAlign: "left",
+                    cursor: "pointer",
+                    transition: "background 0.2s",
+                    fontSize: "0.95rem",
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,255,255,0.05)";
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.background = "transparent";
+                  }}>
+                    Billing
+                  </button>
+                </Link>
+                <Link href="/settings" style={{ textDecoration: "none", width: "100%" }}>
+                  <button style={{
+                    width: "100%",
+                    padding: "12px 16px",
+                    border: "none",
+                    background: "transparent",
+                    color: "rgba(255,255,255,0.8)",
+                    textAlign: "left",
+                    cursor: "pointer",
+                    transition: "background 0.2s",
+                    fontSize: "0.95rem",
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,255,255,0.05)";
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLButtonElement).style.background = "transparent";
+                  }}>
+                    Settings
+                  </button>
+                </Link>
+                <div style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }} />
                 <button
                   onClick={handleLogout}
                   style={{
                     width: "100%",
-                    padding: "12px",
+                    padding: "12px 16px",
                     border: "none",
                     background: "transparent",
                     color: "#FF6B6B",

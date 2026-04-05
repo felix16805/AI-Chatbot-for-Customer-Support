@@ -364,7 +364,7 @@ export default function PricingPlans() {
               </div>
 
               {/* CTA Button */}
-              <Link href={plan.name === "Enterprise" ? "#contact" : "/chat"} style={{ marginBottom: 24, textDecoration: "none" }}>
+              <Link href={plan.name === "Enterprise" ? "/contact" : "/chat"} style={{ marginBottom: 24, textDecoration: "none" }}>
                 <button
                   style={{
                     width: "100%",
