@@ -61,7 +61,7 @@ export default function ChatWindow() {
           intent: data.intent,
           showOptions: !data.isOffTopic
         }]);
-      } catch (_error) {
+      } catch {
         setMessages(prev => [...prev, { 
           id: Date.now() + 1, 
           role: "assistant", 
@@ -102,7 +102,7 @@ export default function ChatWindow() {
         intent: data.intent,
         showOptions: !data.isOffTopic
       }]);
-    } catch (_error) {
+    } catch {
       setMessages(prev => [...prev, { 
         id: Date.now() + 1, 
         role: "assistant", 

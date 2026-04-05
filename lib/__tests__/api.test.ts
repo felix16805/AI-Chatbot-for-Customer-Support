@@ -5,13 +5,11 @@
 
 import {
   LoginSchema,
-  SignupSchema,
   SendMessageSchema,
   validateInput,
 } from '../validation';
 
 import {
-  AppError,
   ValidationError,
   AuthenticationError,
   AuthorizationError,

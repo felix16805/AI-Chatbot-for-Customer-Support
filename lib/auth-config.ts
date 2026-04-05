@@ -41,7 +41,6 @@ const authConfig: NextAuthOptions = {
   callbacks: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async jwt({ token, user }: any) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if (user) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         token.id = (user as any).id;
@@ -50,7 +49,6 @@ const authConfig: NextAuthOptions = {
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async session({ session, token }: any) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if (session.user && token.id) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (session.user as any).id = token.id as string;

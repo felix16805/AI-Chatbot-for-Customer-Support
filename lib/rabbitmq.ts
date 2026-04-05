@@ -39,9 +39,7 @@ const ROUTING_KEYS = {
 // CONNECTION MANAGEMENT
 // ============================================================================
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let connection: any = null;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let channel: any = null;
 
 /**
@@ -229,7 +227,6 @@ export async function consumeEmails(
 
   await ch.consume(QUEUES.EMAIL, async (msg: unknown) => {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const safeMsg = msg as any;
       await handler(safeMsg);
       if (safeMsg) {
@@ -262,7 +259,6 @@ export async function consumeNotifications(
 
   await ch.consume(QUEUES.NOTIFICATION, async (msg: unknown) => {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await handler(msg as any);
       if (msg) {
         ch.ack(msg as any);
@@ -291,7 +287,6 @@ export async function consumeChatProcessing(
 
   await ch.consume(QUEUES.CHAT_PROCESSING, async (msg: unknown) => {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await handler(msg as any);
       if (msg) {
         ch.ack(msg as any);
@@ -324,7 +319,6 @@ export async function consumeChatResponses(
 
   await ch.consume(QUEUES.CHAT_RESPONSES, async (msg: unknown) => {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await handler(msg as any);
       if (msg) {
         ch.ack(msg as any);

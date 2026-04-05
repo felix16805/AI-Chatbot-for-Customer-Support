@@ -41,7 +41,7 @@ export default function ContactPage() {
             Get In Touch
           </h1>
           <p style={{ fontSize: "1rem", color: "rgba(255,255,255,0.6)", lineHeight: 1.8 }}>
-            Have a question or feedback? We'd love to hear from you. Our team is here to help!
+            Have a question or feedback? We&apos;d love to hear from you. Our team is here to help!
           </p>
         </div>
       </section>

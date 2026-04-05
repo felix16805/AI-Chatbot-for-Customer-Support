@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { BookOpen, ArrowRight, Calendar, User } from "lucide-react";
+import { ArrowRight, Calendar, User } from "lucide-react";
 
 export default function BlogPage() {
   const [searchTerm, setSearchTerm] = useState("");

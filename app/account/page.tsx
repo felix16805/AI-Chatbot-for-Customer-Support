@@ -3,10 +3,10 @@
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
-import { CreditCard, Download, Calendar, AlertCircle } from "lucide-react";
+import { Download } from "lucide-react";
 
 export default function AccountPage() {
-  const { user, isLoading, isAuthenticated } = useAuth();
+  const { isLoading, isAuthenticated } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -56,7 +56,7 @@ export default function AccountPage() {
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
             <div>
               <h2 style={{ fontSize: "1.5rem", fontWeight: 700, color: "white", marginBottom: 4, fontFamily: "'Syne', sans-serif" }}>Professional Plan</h2>
-              <p style={{ color: "rgba(255,255,255,0.6)" }}>You're currently on the Professional plan</p>
+              <p style={{ color: "rgba(255,255,255,0.6)" }}>You&apos;re currently on the Professional plan</p>
             </div>
             <div style={{ background: "rgba(59,130,246,0.2)", borderRadius: 12, padding: "8px 16px" }}>
               <span style={{ color: "#3B82F6", fontWeight: 600 }}>Active</span>

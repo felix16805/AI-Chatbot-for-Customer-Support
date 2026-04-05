@@ -3,7 +3,7 @@
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
-import { Bell, Lock, Eye, LogOut, Trash2, Save } from "lucide-react";
+import { Lock, Trash2, Save } from "lucide-react";
 import { useState } from "react";
 
 export default function SettingsPage() {

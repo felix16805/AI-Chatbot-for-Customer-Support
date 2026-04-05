@@ -5,12 +5,10 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function AboutPage() {
-  const [scrollY, setScrollY] = useState(0);
   const [visibleSections, setVisibleSections] = useState<{ [key: string]: boolean }>({});
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrollY(window.scrollY);
       
       // Intersection observer for animations
       const sections = document.querySelectorAll("[data-section]");
@@ -215,7 +213,7 @@ export default function AboutPage() {
               Project Overview
             </h2>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: 32 }}>
-              {values.map((value, idx) => {
+              {values.map((value) => {
                 const Icon = value.icon;
                 return (
                   <div

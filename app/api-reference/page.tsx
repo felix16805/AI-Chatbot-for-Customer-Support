@@ -1,6 +1,6 @@
 "use client";
 
-import { Code2, BookOpen, Settings, Zap, Copy, Check } from "lucide-react";
+import { Code2, Settings, Copy, Check } from "lucide-react";
 import { useState } from "react";
 
 export default function ApiReferencePage() {
@@ -126,7 +126,7 @@ export default function ApiReferencePage() {
           API Reference
         </h1>
         <p style={{ fontSize: "1.1rem", color: "rgba(255,255,255,0.6)", maxWidth: 600, margin: "0 auto" }}>
-          Complete guide to Aria's RESTful API
+          Complete guide to Aria&apos;s RESTful API
         </p>
       </section>
 

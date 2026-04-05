@@ -1,6 +1,6 @@
 "use client";
 
-import { Code2, BookOpen, Settings, Zap, ChevronRight, Copy, Check } from "lucide-react";
+import { Code2, BookOpen, Settings, Zap, Copy, Check } from "lucide-react";
 import { useState } from "react";
 
 export default function DocumentationPage() {

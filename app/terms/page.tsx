@@ -78,7 +78,7 @@ export default function TermsPage() {
       <section style={{ position: "relative", zIndex: 1, padding: "40px 56px" }}>
         <div style={{ maxWidth: 900, margin: "0 auto", background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, padding: 28 }}>
           <p style={{ color: "rgba(255,255,255,0.7)", lineHeight: 1.6, fontSize: "0.95rem" }}>
-            Welcome to Aria. These Terms of Service ("Terms") govern your use of our website, services, and products. By accessing or using Aria in any way, including visiting our website, you agree to be bound by these Terms. If you do not agree with any part of these Terms, please do not use our services.
+            Welcome to Aria. These Terms of Service (&quot;Terms&quot;) govern your use of our website, services, and products. By accessing or using Aria in any way, including visiting our website, you agree to be bound by these Terms. If you do not agree with any part of these Terms, please do not use our services.
           </p>
         </div>
       </section>

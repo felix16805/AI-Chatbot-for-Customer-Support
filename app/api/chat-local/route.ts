@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 
 // Global model instance - persists across requests for performance
-let pipeline: any = null;
+// @ts-expect-error - Xenova pipeline is dynamically loaded
+let pipeline: unknown = null;
 
 /**
  * Initialize the transformer model on first request

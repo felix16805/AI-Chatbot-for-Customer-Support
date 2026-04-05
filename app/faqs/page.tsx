@@ -171,7 +171,7 @@ export default function FAQsPage() {
         <div style={{ maxWidth: 600, margin: "0 auto", textAlign: "center", background: "linear-gradient(135deg, rgba(236,72,153,0.1) 0%, rgba(236,72,153,0.05) 100%)", border: "1px solid rgba(236,72,153,0.2)", borderRadius: 30, padding: "60px 40px" }}>
           <h2 style={{ fontSize: "1.6rem", fontWeight: 800, color: "white", marginBottom: 16, fontFamily: "'Syne', sans-serif" }}>Still Have Questions?</h2>
           <p style={{ color: "rgba(255,255,255,0.6)", marginBottom: 24, lineHeight: 1.8 }}>
-            Can't find the answer you're looking for? Our support team is here to help.
+            Can&apos;t find the answer you&apos;re looking for? Our support team is here to help.
           </p>
           <a href="/contact" style={{ background: "linear-gradient(135deg, #EC4899, #DB2777)", color: "white", padding: "14px 32px", borderRadius: 12, textDecoration: "none", fontWeight: 600, display: "inline-block", transition: "all 0.25s" }} onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-2px)")} onMouseLeave={(e) => (e.currentTarget.style.transform = "translateY(0)")}>
             Contact Support

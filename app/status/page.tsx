@@ -1,11 +1,8 @@
 "use client";
 
-import { CheckCircle, AlertCircle, Clock, TrendingUp } from "lucide-react";
-import { useState } from "react";
+import { CheckCircle, Clock, TrendingUp } from "lucide-react";
 
 export default function StatusPage() {
-  const [timeRange, setTimeRange] = useState<"7d" | "30d" | "90d">("30d");
-
   const services = [
     { name: "Chat API", status: "operational", uptime: 99.98, lastIncident: "Mar 28, 2026" },
     { name: "Authentication", status: "operational", uptime: 99.99, lastIncident: "Mar 15, 2026" },

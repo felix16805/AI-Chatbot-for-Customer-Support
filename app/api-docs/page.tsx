@@ -1,6 +1,6 @@
 "use client";
 
-import { Code, Zap, Lock, Database } from "lucide-react";
+import { Zap, Lock, Database } from "lucide-react";
 import Link from "next/link";
 
 export default function ApiDocsPage() {

@@ -257,15 +257,3 @@ function sanitizeNestedObject(obj: Record<string, unknown>): Record<string, unkn
 
   return sanitized;
 }
-
-export default {
-  sanitizeString,
-  sanitizeEmail,
-  stripSensitiveFields,
-  isValidUrl,
-  isValidUUID,
-  validatePasswordStrength,
-  escapeHtml,
-  containsSQLInjectionPatterns,
-  validateAndSanitize,
-};

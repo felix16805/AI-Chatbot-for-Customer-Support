@@ -28,13 +28,13 @@ export default function TermsPage() {
               2. Use License
             </h2>
             <p style={{ color: "rgba(255,255,255,0.6)", lineHeight: 1.8, marginBottom: 12 }}>
-              Permission is granted to temporarily download one copy of the materials (information or software) on Aria AI's website for personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title, and under this license you may not:
+              Permission is granted to temporarily download one copy of the materials (information or software) on Aria AI&apos;s website for personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title, and under this license you may not:
             </p>
             <ul style={{ color: "rgba(255,255,255,0.6)", lineHeight: 1.8, paddingLeft: 24, marginBottom: 12 }}>
               <li>Modifying or copying the materials</li>
               <li>Using the materials for any commercial purpose or for any public display</li>
               <li>Attempting to decompile, reverse engineering, or disassemble any software contained on Aria AI</li>
-              <li>Transferring the materials to another person or "mirroring" the materials on any other server</li>
+              <li>Transferring the materials to another person or &quot;mirroring&quot; the materials on any other server</li>
               <li>Removing any copyright or other proprietary notations from the materials</li>
             </ul>
           </section>
@@ -44,7 +44,7 @@ export default function TermsPage() {
               3. Disclaimer
             </h2>
             <p style={{ color: "rgba(255,255,255,0.6)", lineHeight: 1.8, marginBottom: 12 }}>
-              The materials on Aria AI's website are provided on an 'as is' basis. Aria AI makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.
+              The materials on Aria AI&apos;s website are provided on an &apos;as is&apos; basis. Aria AI makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.
             </p>
           </section>
 
@@ -53,7 +53,7 @@ export default function TermsPage() {
               4. Limitations
             </h2>
             <p style={{ color: "rgba(255,255,255,0.6)", lineHeight: 1.8 }}>
-              In no event shall Aria AI or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the materials on Aria AI's website, even if Aria AI or an authorized representative has been notified orally or in writing of the possibility of such damage.
+              In no event shall Aria AI or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the materials on Aria AI&apos;s website, even if Aria AI or an authorized representative has been notified orally or in writing of the possibility of such damage.
             </p>
           </section>
 
@@ -62,7 +62,7 @@ export default function TermsPage() {
               5. Accuracy of Materials
             </h2>
             <p style={{ color: "rgba(255,255,255,0.6)", lineHeight: 1.8 }}>
-              The materials appearing on Aria AI's website could include technical, typographical, or photographic errors. Aria AI does not warrant that any of the materials on its website are accurate, complete, or current. Aria AI may make changes to the materials contained on its website at any time without notice.
+              The materials appearing on Aria AI&apos;s website could include technical, typographical, or photographic errors. Aria AI does not warrant that any of the materials on its website are accurate, complete, or current. Aria AI may make changes to the materials contained on its website at any time without notice.
             </p>
           </section>
 
@@ -71,7 +71,7 @@ export default function TermsPage() {
               6. Links
             </h2>
             <p style={{ color: "rgba(255,255,255,0.6)", lineHeight: 1.8 }}>
-              Aria AI has not reviewed all of the sites linked to its website and is not responsible for the contents of any such linked site. The inclusion of any link does not imply endorsement by Aria AI of the site. Use of any such linked website is at the user's own risk.
+              Aria AI has not reviewed all of the sites linked to its website and is not responsible for the contents of any such linked site. The inclusion of any link does not imply endorsement by Aria AI of the site. Use of any such linked website is at the user&apos;s own risk.
             </p>
           </section>
 
