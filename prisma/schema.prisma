@@ -4,11 +4,11 @@
 generator client {
   provider = "prisma-client"
   output   = "../lib/generated/prisma"
-  engineType = "library"
 }
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 // ============================================================================
@@ -210,4 +210,3 @@ model ApiMetric {
   @@index([endpoint])
   @@index([createdAt])
 }
-
