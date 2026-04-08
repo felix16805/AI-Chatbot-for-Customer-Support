@@ -1,0 +1,73 @@
+name: Dependency Updates
+
+on:
+  schedule:
+    # Check for updates weekly on Monday at 10 AM UTC
+    - cron: '0 10 * * 1'
+  workflow_dispatch:
+
+jobs:
+  update-dependencies:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: npm
+
+      - name: Check for outdated packages
+        run: npm outdated --json > outdated.json || true
+
+      - name: Check outdated summary
+        run: |
+          npm outdated
+          echo ""
+          echo "Analyzing updates needed..."
+
+      - name: Update patch and minor versions
+        run: |
+          npm update
+
+      - name: Install any missing dependencies
+        run: npm ci
+
+      - name: Run tests to verify updates
+        run: npm test -- --coverage
+        continue-on-error: true
+
+      - name: Check for security issues
+        run: npm audit --audit-level=moderate
+        continue-on-error: true
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          commit-message: 'chore(deps): update dependencies'
+          title: '[Automated] Dependency Updates'
+          body: |
+            ## Automated Dependency Update
+            
+            This is an automated pull request to update project dependencies.
+            
+            ### What's changed
+            - Updated npm packages to latest compatible versions
+            - Security patches included where available
+            
+            ### Pre-merge checklist
+            - [ ] Review dependency updates
+            - [ ] Verify tests pass
+            - [ ] Check npm audit results
+            - [ ] Review breaking changes (if any)
+            
+            **Note**: This PR should be reviewed and manually approved before merging.
+          branch: chore/dependency-updates
+          delete-branch: true
+          labels: dependencies, automated
